@@ -16,6 +16,7 @@ const Student = sequelize.define('Student', {
 
 const User = sequelize.define('User', {
   registrationNumber: { type: DataTypes.STRING(20), allowNull: false, unique: true },
+  fullName: { type: DataTypes.STRING, allowNull: false },
   email: { type: DataTypes.STRING, allowNull: false },
   password: { type: DataTypes.STRING, allowNull: true },
   role: { 
@@ -54,6 +55,7 @@ async function seedDatabase() {
     await User.bulkCreate([
       {
         registrationNumber: 'ADMIN_ACADEMICS',
+        fullName: 'Dr. Sarah Academic',
         email: 'academics.admin@school.edu',
         password: hashedPassword,
         role: 'school_admin',
@@ -62,6 +64,7 @@ async function seedDatabase() {
       },
       {
         registrationNumber: 'ADMIN_GENERAL',
+        fullName: 'Mr. Mike General',
         email: 'general.admin@school.edu',
         password: hashedPassword,
         role: 'school_admin',
@@ -70,6 +73,7 @@ async function seedDatabase() {
       },
       {
         registrationNumber: 'ADMIN_HOSTEL',
+        fullName: 'Ms. Helen Hostel',
         email: 'hostel.admin@school.edu',
         password: hashedPassword,
         role: 'school_admin',
@@ -78,6 +82,7 @@ async function seedDatabase() {
       },
       {
         registrationNumber: 'CENTRAL_ADMIN',
+        fullName: 'Prof. David Central',
         email: 'central.admin@school.edu',
         password: hashedPassword,
         role: 'central_admin',
