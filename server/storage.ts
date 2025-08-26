@@ -6,14 +6,23 @@ export interface IStorage {
   // Auth
   getUserByRegistrationNumber(regNumber: string): Promise<User | null>;
   getUserById(id: number): Promise<User | null>;
-  createUser(userData: any): Promise<User>;
+  createUser(userData: {
+    registrationNumber: string;
+    email: string;
+    fullName: string;
+    role: 'student' | 'school_admin' | 'central_admin';
+    otpCode: string;
+    otpExpires: Date;
+    password?: string;
+    category?: 'academics' | 'general' | 'hostel';
+  }): Promise<any>;
   updateUser(id: number, data: any): Promise<User | null>;
   verifyUser(id: number): Promise<User | null>;
 
   // Students
   getStudentByRegistrationNumber(regNumber: string): Promise<Student | null>;
   getAllStudents(): Promise<Student[]>;
-  
+
   // Complaints
   createComplaint(complaintData: any): Promise<Complaint>;
   getComplaintsByStudentId(studentId: number): Promise<Complaint[]>;
@@ -21,7 +30,7 @@ export interface IStorage {
   getAllComplaints(): Promise<Complaint[]>;
   getComplaintById(id: number): Promise<Complaint | null>;
   updateComplaint(id: number, data: any): Promise<Complaint | null>;
-  
+
   // Audit Logs
   createAuditLog(logData: any): Promise<AuditLog>;
   getAuditLogs(): Promise<AuditLog[]>;
@@ -47,7 +56,7 @@ export class DatabaseStorage implements IStorage {
     if (data.password) {
       data.password = await bcrypt.hash(data.password, 10);
     }
-    
+
     const [updated] = await User.update(data, { where: { id } });
     if (updated) {
       return await this.getUserById(id);
