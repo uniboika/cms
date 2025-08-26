@@ -1,42 +1,64 @@
-# Complaint Management System
+# EduComplaints Management System
 
 ## Overview
 
-A fullstack web application for educational institutions to manage student complaints with role-based access control, OTP authentication, and administrative oversight features. The system allows students to submit complaints in various categories (academics, general, hostel) with optional anonymity, while providing administrators with tools to resolve complaints, trace anonymous submissions, and manage user accounts with flagging and suspension capabilities.
+A comprehensive fullstack complaint management system designed for educational institutions, featuring role-based access control, OTP authentication, and administrative oversight capabilities. The system has been completely separated into independent backend and frontend applications for better maintainability, deployment flexibility, and development workflow.
 
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
 
+## Recent Changes (Latest Update: August 26, 2025)
+
+### Architecture Migration
+- **Separated Backend & Frontend**: Complete separation into independent applications with their own package.json files
+- **Redux Integration**: Implemented Redux Toolkit for JWT token state management to resolve authentication persistence issues
+- **Enhanced Landing Page**: Redesigned with modern, clean UI featuring gradients, better typography, and improved user experience
+- **API Configuration**: Updated frontend to connect to backend via configurable API endpoints with CORS support
+- **Independent Development**: Both applications can now run separately - backend on port 5000, frontend on port 3000
+
 ## System Architecture
 
-### Frontend Architecture
-- **Vite + React**: Modern build tool with React for fast development and optimized production builds
-- **Tailwind CSS**: Utility-first CSS framework for rapid UI development
-- **Wouter**: Lightweight client-side routing library as an alternative to React Router
-- **TanStack Query**: Data fetching, caching, and synchronization for server state management
-- **Shadcn UI**: Pre-built component library built on Radix UI primitives for consistent design
+### Project Structure
+```
+📁 Project Root
+├── 📂 backend/          # Node.js + Express API Server (New)
+├── 📂 frontend/         # React + Vite Client Application (New)
+├── 📂 client/           # Legacy frontend (kept for reference)
+├── 📂 server/           # Legacy backend (kept for reference)
+└── 📂 shared/           # Shared types and schemas
+```
 
-### Backend Architecture
-- **Node.js + Express**: RESTful API server with Express framework
+### Backend Architecture (Port 5000)
+- **Node.js + Express**: RESTful API server with CORS configuration
 - **TypeScript**: Type-safe development across the entire application
 - **JWT Authentication**: Stateless authentication with 7-day token expiry
 - **bcryptjs**: Password hashing for secure user credential storage
-- **Role-based Access Control**: Three distinct user roles (student, school_admin, central_admin) with different permissions
+- **Sequelize ORM**: Object-relational mapping with PostgreSQL
+- **PostgreSQL**: Primary database automatically configured in Replit environment
+- **Role-based Access Control**: Three distinct user roles with different permissions
+
+### Frontend Architecture (Port 3000)
+- **React 18 + Vite**: Modern build tool with React for fast development and optimized production builds
+- **Redux Toolkit**: Centralized state management for authentication and user data
+- **TanStack Query**: Server state management, caching, and synchronization
+- **Tailwind CSS**: Utility-first CSS framework for rapid UI development
+- **Shadcn UI**: Pre-built component library built on Radix UI primitives
+- **Wouter**: Lightweight client-side routing library
+- **Lucide React**: Modern icon library for consistent iconography
 
 ### Database Design
-- **Drizzle ORM**: Type-safe SQL query builder with PostgreSQL dialect
-- **PostgreSQL**: Primary database configured via Drizzle, though the codebase shows migration from Sequelize/MySQL
 - **Schema Structure**:
-  - Users table with roles, flagging, and suspension capabilities
+  - Users table with roles, flagging, suspension capabilities, and full name field
   - Students table for registration validation
   - Complaints table with status tracking and resolution notes
   - Audit logs table for administrative action tracking
 
 ### Authentication Flow
-- **Multi-step Registration**: Registration number validation → Email verification → OTP verification → Password setup → Login
-- **OTP System**: Console-based OTP delivery for development (configurable for email)
-- **Session Management**: JWT tokens stored in localStorage with automatic logout on expiry
+- **Multi-step Registration**: Registration number validation → Full name input → Email verification → OTP verification → Password setup → Login
+- **Redux State Management**: JWT tokens managed through Redux store with persistence
+- **API Authentication**: Automatic token inclusion in API requests via interceptors
+- **Session Management**: Centralized logout functionality across all components
 
 ### Role-Based Features
 - **Student Role**: Create complaints (with anonymity option), view complaint history and status
@@ -47,6 +69,7 @@ Preferred communication style: Simple, everyday language.
 - **Anonymous Complaint Tracing**: Admin ability to trace anonymous complaints with audit logging
 - **User Flagging System**: Automatic suspension when flag count reaches threshold (default: 3)
 - **Audit Logging**: Comprehensive tracking of administrative actions for accountability
+- **CORS Configuration**: Secure cross-origin requests between frontend and backend
 
 ## External Dependencies
 

@@ -1,0 +1,1071 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complaint Management System - MVP Design Mockup</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#EFF6FF',
+                            500: '#3B82F6',
+                            600: '#2563EB',
+                            700: '#1D4ED8'
+                        }
+                    }
+                }
+            }
+        };
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+    <!-- @COMPONENT: App [Main application wrapper with routing logic] -->
+    <div id="app">
+        
+        <!-- SCREEN 1: Landing Page -->
+        <!-- @COMPONENT: LandingPage [Hero section with registration/login panels] -->
+        <div id="landing-page" class="min-h-screen bg-white">
+            <!-- Navigation -->
+            <nav class="bg-white shadow-sm border-b border-gray-200">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex justify-between items-center h-16">
+                        <div class="flex-shrink-0">
+                            <h1 class="text-xl font-bold text-gray-900">
+                                <i class="fas fa-clipboard-list mr-2 text-primary-500"></i>
+                                Complaint Management System
+                            </h1>
+                        </div>
+                        <div class="text-sm text-gray-500">
+                            Student Portal
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Hero Section -->
+                    <div class="flex flex-col justify-center space-y-6">
+                        <h1 class="text-4xl font-bold text-gray-900 leading-tight">
+                            Student Complaint Management Portal
+                        </h1>
+                        <p class="text-lg text-gray-600 leading-relaxed">
+                            Submit and track complaints related to academics, general issues, or hostel facilities. 
+                            Your voice matters in improving our educational environment.
+                        </p>
+                        <div class="flex flex-wrap gap-4">
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-shield-alt text-green-500 mr-2"></i>
+                                Secure & Anonymous Options
+                            </div>
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-clock text-blue-500 mr-2"></i>
+                                Real-time Status Updates
+                            </div>
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-users text-purple-500 mr-2"></i>
+                                Multi-level Resolution
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Registration/Login Panels -->
+                    <div class="space-y-6">
+                        <!-- Register Panel -->
+                        <div class="bg-white rounded-lg shadow-lg border border-gray-200 p-6">
+                            <div class="text-center mb-4">
+                                <i class="fas fa-user-plus text-3xl text-primary-500 mb-3"></i>
+                                <h3 class="text-xl font-semibold text-gray-900">New Student Registration</h3>
+                                <p class="text-sm text-gray-600 mt-1">Create your account to start submitting complaints</p>
+                            </div>
+                            <button data-event="click:showRegistrationModal" data-implementation="Open registration modal" 
+                                    class="w-full bg-primary-500 hover:bg-primary-600 text-white font-medium py-3 px-4 rounded-lg transition duration-200">
+                                Get Started
+                            </button>
+                        </div>
+
+                        <!-- Login Panel -->
+                        <div class="bg-white rounded-lg shadow-lg border border-gray-200 p-6">
+                            <div class="text-center mb-4">
+                                <i class="fas fa-sign-in-alt text-3xl text-gray-600 mb-3"></i>
+                                <h3 class="text-xl font-semibold text-gray-900">Student Login</h3>
+                                <p class="text-sm text-gray-600 mt-1">Access your dashboard and complaint history</p>
+                            </div>
+                            <button data-event="click:showLoginModal" data-implementation="Open login modal" 
+                                    class="w-full bg-gray-600 hover:bg-gray-700 text-white font-medium py-3 px-4 rounded-lg transition duration-200">
+                                Sign In
+                            </button>
+                        </div>
+
+                        <!-- Admin Access -->
+                        <div class="bg-gray-50 rounded-lg border border-gray-200 p-4">
+                            <div class="text-center">
+                                <p class="text-sm text-gray-600 mb-2">Administrative Access</p>
+                                <button data-event="click:showAdminLogin" data-implementation="Open admin login" 
+                                        class="text-sm text-primary-500 hover:text-primary-600 font-medium">
+                                    Admin Panel →
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- @END_COMPONENT: LandingPage -->
+
+        <!-- SCREEN 2: Registration Modal -->
+        <!-- @COMPONENT: RegistrationModal [Registration number and email input] -->
+        <div id="registration-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden" data-mock="true">
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Student Registration</h3>
+                        <button class="text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <form data-implementation="Registration form with validation">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Registration Number
+                                </label>
+                                <input type="text" placeholder="e.g., STU1001" 
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                                <p class="text-xs text-gray-500 mt-1">Enter your official student registration number</p>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Email Address
+                                </label>
+                                <input type="email" placeholder="your.email@student.edu" 
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                                <p class="text-xs text-gray-500 mt-1">We'll send verification details to this email</p>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 flex space-x-3">
+                            <button type="button" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 font-medium py-2 px-4 rounded-lg">
+                                Cancel
+                            </button>
+                            <button type="submit" data-implementation="Validate and send OTP" 
+                                    class="flex-1 bg-primary-500 hover:bg-primary-600 text-white font-medium py-2 px-4 rounded-lg">
+                                Continue
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- @END_COMPONENT: RegistrationModal -->
+
+        <!-- SCREEN 3: OTP Verification -->
+        <!-- @COMPONENT: OTPVerification [OTP input and verification] -->
+        <div id="otp-verification" class="min-h-screen bg-gray-50 hidden" data-mock="true">
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div class="bg-white rounded-lg shadow-xl max-w-md w-full p-8">
+                    <div class="text-center mb-6">
+                        <i class="fas fa-mobile-alt text-4xl text-primary-500 mb-4"></i>
+                        <h2 class="text-xl font-semibold text-gray-900">Verify Your Registration</h2>
+                        <p class="text-sm text-gray-600 mt-2">
+                            An OTP has been sent to the console. Please check the server logs.
+                        </p>
+                        <p class="text-xs text-blue-600 mt-1 font-medium">
+                            Registration: <span data-bind="registrationNumber">STU1001</span>
+                        </p>
+                    </div>
+                    
+                    <form data-implementation="OTP verification logic">
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-3">
+                                Enter OTP Code
+                            </label>
+                            <input type="text" maxlength="6" placeholder="000000" 
+                                   class="w-full px-4 py-3 text-center text-lg font-mono border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent tracking-widest">
+                        </div>
+                        
+                        <button type="submit" data-implementation="Verify OTP and proceed to password setup" 
+                                class="w-full bg-primary-500 hover:bg-primary-600 text-white font-medium py-3 px-4 rounded-lg transition duration-200">
+                            Verify & Continue
+                        </button>
+                        
+                        <div class="mt-4 text-center">
+                            <button type="button" class="text-sm text-gray-500 hover:text-gray-700">
+                                Didn't receive OTP? Check console logs
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- @END_COMPONENT: OTPVerification -->
+
+        <!-- SCREEN 4: Password Setup -->
+        <!-- @COMPONENT: PasswordSetup [Password creation form] -->
+        <div id="password-setup" class="min-h-screen bg-gray-50 hidden" data-mock="true">
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div class="bg-white rounded-lg shadow-xl max-w-md w-full p-8">
+                    <div class="text-center mb-6">
+                        <i class="fas fa-lock text-4xl text-green-500 mb-4"></i>
+                        <h2 class="text-xl font-semibold text-gray-900">Set Your Password</h2>
+                        <p class="text-sm text-gray-600 mt-2">
+                            Create a secure password for your account
+                        </p>
+                    </div>
+                    
+                    <form data-implementation="Password creation with validation">
+                        <div class="space-y-4 mb-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    New Password
+                                </label>
+                                <input type="password" placeholder="Enter password" 
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Confirm Password
+                                </label>
+                                <input type="password" placeholder="Confirm password" 
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                            </div>
+                        </div>
+                        
+                        <button type="submit" data-implementation="Create account and redirect to login" 
+                                class="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg transition duration-200">
+                            Create Account
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- @END_COMPONENT: PasswordSetup -->
+
+        <!-- SCREEN 5: Student Dashboard -->
+        <!-- @COMPONENT: StudentDashboard [Main student interface] -->
+        <div id="student-dashboard" class="min-h-screen bg-gray-50 hidden" data-mock="true">
+            <!-- Top Navigation -->
+            <nav class="bg-white shadow-sm border-b border-gray-200">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex justify-between items-center h-16">
+                        <div class="flex items-center space-x-4">
+                            <h1 class="text-lg font-semibold text-gray-900">Student Dashboard</h1>
+                            <span class="text-sm text-gray-500">Welcome, <span data-bind="user.name">John Doe</span></span>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <span class="text-sm text-gray-600">Reg: <span data-bind="user.regNumber">STU1001</span></span>
+                            <button data-event="click:logout" class="text-sm text-gray-500 hover:text-gray-700">
+                                <i class="fas fa-sign-out-alt mr-1"></i> Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Main Content -->
+                    <div class="lg:col-span-2 space-y-6">
+                        <!-- Create New Complaint Card -->
+                        <div class="bg-white rounded-lg shadow border border-gray-200 p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                                <i class="fas fa-plus-circle text-primary-500 mr-2"></i>
+                                Submit New Complaint
+                            </h3>
+                            
+                            <form data-implementation="Complaint submission with anonymous toggle">
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Title</label>
+                                        <input type="text" placeholder="Brief description of the issue" 
+                                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                                        <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                            <option>Select category</option>
+                                            <option value="academics">Academics</option>
+                                            <option value="general">General</option>
+                                            <option value="hostel">Hostel</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                                        <textarea rows="4" placeholder="Detailed description of your complaint" 
+                                                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"></textarea>
+                                    </div>
+                                    
+                                    <div class="flex items-center space-x-3">
+                                        <input type="checkbox" id="anonymous" data-event="change:handleAnonymousToggle" 
+                                               class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
+                                        <label for="anonymous" class="text-sm text-gray-700">Submit anonymously</label>
+                                        <i class="fas fa-info-circle text-gray-400" title="Anonymous submissions can still be traced by administrators"></i>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-6">
+                                    <button type="submit" data-implementation="Show anonymous warning if checked, then submit" 
+                                            class="bg-primary-500 hover:bg-primary-600 text-white font-medium py-2 px-6 rounded-lg transition duration-200">
+                                        Submit Complaint
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- My Complaints -->
+                        <div class="bg-white rounded-lg shadow border border-gray-200">
+                            <div class="px-6 py-4 border-b border-gray-200">
+                                <h3 class="text-lg font-semibold text-gray-900">My Complaints</h3>
+                            </div>
+                            
+                            <div class="divide-y divide-gray-200">
+                                <!-- @MAP: complaints.map(complaint => ( -->
+                                <div class="px-6 py-4">
+                                    <div class="flex items-start justify-between">
+                                        <div class="flex-1">
+                                            <div class="flex items-center space-x-3 mb-2">
+                                                <h4 class="font-medium text-gray-900" data-bind="complaint.title">Library noise levels too high</h4>
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                                    <span data-bind="complaint.category">academics</span>
+                                                </span>
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                                    <span data-bind="complaint.status">pending</span>
+                                                </span>
+                                            </div>
+                                            <p class="text-sm text-gray-600 mb-2" data-bind="complaint.description">
+                                                The library is consistently noisy during study hours, making it difficult to concentrate...
+                                            </p>
+                                            <div class="flex items-center text-xs text-gray-500 space-x-4">
+                                                <span data-bind="complaint.createdAt">Dec 15, 2024</span>
+                                                <span data-bind="complaint.anonymous">Anonymous: Yes</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- @END_MAP )) -->
+                                
+                                <!-- Resolved complaint example -->
+                                <div class="px-6 py-4 bg-green-50">
+                                    <div class="flex items-start justify-between">
+                                        <div class="flex-1">
+                                            <div class="flex items-center space-x-3 mb-2">
+                                                <h4 class="font-medium text-gray-900">Broken water cooler in Block A</h4>
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                                    hostel
+                                                </span>
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                    resolved
+                                                </span>
+                                            </div>
+                                            <p class="text-sm text-gray-600 mb-2">
+                                                Water cooler on the ground floor has been leaking for several days...
+                                            </p>
+                                            <div class="bg-green-100 border border-green-200 rounded-lg p-3 mb-2">
+                                                <p class="text-sm font-medium text-green-800">Resolution:</p>
+                                                <p class="text-sm text-green-700">Water cooler has been repaired and is now functioning properly. Thank you for reporting this issue.</p>
+                                            </div>
+                                            <div class="flex items-center text-xs text-gray-500 space-x-4">
+                                                <span>Dec 10, 2024</span>
+                                                <span>Anonymous: No</span>
+                                                <span>Resolved: Dec 12, 2024</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sidebar -->
+                    <div class="space-y-6">
+                        <!-- Quick Stats -->
+                        <div class="bg-white rounded-lg shadow border border-gray-200 p-6">
+                            <h4 class="font-semibold text-gray-900 mb-4">Quick Stats</h4>
+                            <div class="space-y-3">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Total Complaints</span>
+                                    <span class="font-medium text-gray-900" data-bind="stats.total">5</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Pending</span>
+                                    <span class="font-medium text-yellow-600" data-bind="stats.pending">3</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Resolved</span>
+                                    <span class="font-medium text-green-600" data-bind="stats.resolved">2</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Flag Count</span>
+                                    <span class="font-medium text-red-600" data-bind="stats.flagCount">0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Guidelines -->
+                        <div class="bg-blue-50 rounded-lg border border-blue-200 p-6">
+                            <h4 class="font-semibold text-blue-900 mb-3">
+                                <i class="fas fa-info-circle mr-2"></i>
+                                Guidelines
+                            </h4>
+                            <ul class="text-sm text-blue-800 space-y-2">
+                                <li>• Be specific and detailed in your complaints</li>
+                                <li>• Choose the appropriate category</li>
+                                <li>• Anonymous reports can still be traced</li>
+                                <li>• False reports may result in account flags</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- @END_COMPONENT: StudentDashboard -->
+
+        <!-- SCREEN 6: Anonymous Complaint Warning Modal -->
+        <!-- @COMPONENT: AnonymousWarningModal [Warning modal for anonymous submissions] -->
+        <div id="anonymous-warning-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden" data-mock="true">
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div class="bg-white rounded-lg shadow-xl max-w-lg w-full p-6">
+                    <div class="flex items-start space-x-3">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-exclamation-triangle text-3xl text-yellow-500"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2">Anonymous Submission Warning</h3>
+                            <div class="text-sm text-gray-600 space-y-2">
+                                <p><strong>Important:</strong> While your complaint will appear anonymous to other users, administrators can still trace the report back to you if necessary.</p>
+                                <p>Submitting false or malicious reports may lead to account flags and potential suspension.</p>
+                                <p>Please ensure your complaint is genuine and accurate.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 flex space-x-3">
+                        <button type="button" data-event="click:cancelAnonymous" 
+                                class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 font-medium py-2 px-4 rounded-lg">
+                            Cancel
+                        </button>
+                        <button type="button" data-event="click:confirmAnonymous" data-implementation="Submit complaint anonymously" 
+                                class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-2 px-4 rounded-lg">
+                            I Understand, Submit
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- @END_COMPONENT: AnonymousWarningModal -->
+
+        <!-- SCREEN 7: School Admin Dashboard -->
+        <!-- @COMPONENT: SchoolAdminDashboard [School admin interface for managing complaints] -->
+        <div id="school-admin-dashboard" class="min-h-screen bg-gray-50 hidden" data-mock="true">
+            <!-- Top Navigation -->
+            <nav class="bg-white shadow-sm border-b border-gray-200">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex justify-between items-center h-16">
+                        <div class="flex items-center space-x-4">
+                            <h1 class="text-lg font-semibold text-gray-900">School Admin Dashboard</h1>
+                            <span class="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                                <span data-bind="admin.category">Academics</span> Administrator
+                            </span>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <span class="text-sm text-gray-600">Admin: <span data-bind="admin.name">Dr. Smith</span></span>
+                            <button data-event="click:logout" class="text-sm text-gray-500 hover:text-gray-700">
+                                <i class="fas fa-sign-out-alt mr-1"></i> Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white rounded-lg shadow border border-gray-200 p-6">
+                        <div class="flex items-center">
+                            <i class="fas fa-clipboard-list text-2xl text-blue-500 mr-3"></i>
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Total Complaints</p>
+                                <p class="text-2xl font-bold text-gray-900" data-bind="adminStats.total">12</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow border border-gray-200 p-6">
+                        <div class="flex items-center">
+                            <i class="fas fa-clock text-2xl text-yellow-500 mr-3"></i>
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Pending</p>
+                                <p class="text-2xl font-bold text-yellow-600" data-bind="adminStats.pending">8</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow border border-gray-200 p-6">
+                        <div class="flex items-center">
+                            <i class="fas fa-check-circle text-2xl text-green-500 mr-3"></i>
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Resolved</p>
+                                <p class="text-2xl font-bold text-green-600" data-bind="adminStats.resolved">3</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow border border-gray-200 p-6">
+                        <div class="flex items-center">
+                            <i class="fas fa-flag text-2xl text-red-500 mr-3"></i>
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Flagged as False</p>
+                                <p class="text-2xl font-bold text-red-600" data-bind="adminStats.false">1</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Complaints Table -->
+                <div class="bg-white rounded-lg shadow border border-gray-200">
+                    <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                        <h3 class="text-lg font-semibold text-gray-900">Complaints for My Category</h3>
+                        <div class="flex space-x-3">
+                            <select class="text-sm border border-gray-300 rounded px-3 py-1">
+                                <option>All Status</option>
+                                <option>Pending</option>
+                                <option>Resolved</option>
+                                <option>False</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Complaint</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <!-- @MAP: complaints.map(complaint => ( -->
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4">
+                                        <div>
+                                            <h4 class="font-medium text-gray-900" data-bind="complaint.title">Library noise levels too high</h4>
+                                            <p class="text-sm text-gray-600" data-bind="complaint.description">The library is consistently noisy during study hours...</p>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm">
+                                        <div>
+                                            <span data-bind="complaint.anonymous" class="text-gray-500">Anonymous</span>
+                                            <button data-event="click:traceComplaint" data-implementation="Show trace modal with audit log" 
+                                                    class="ml-2 text-blue-600 hover:text-blue-800 text-xs">
+                                                <i class="fas fa-search"></i> Trace
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-gray-600" data-bind="complaint.createdAt">Dec 15, 2024</td>
+                                    <td class="px-6 py-4">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800" data-bind="complaint.status">
+                                            pending
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm space-x-2">
+                                        <button data-event="click:resolveComplaint" data-implementation="Show resolve modal" 
+                                                class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-xs">
+                                            Resolve
+                                        </button>
+                                        <button data-event="click:markFalse" data-implementation="Show mark false modal" 
+                                                class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs">
+                                            Mark False
+                                        </button>
+                                    </td>
+                                </tr>
+                                <!-- @END_MAP )) -->
+                                
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4">
+                                        <div>
+                                            <h4 class="font-medium text-gray-900">Outdated course materials</h4>
+                                            <p class="text-sm text-gray-600">The textbooks for Computer Science 101 are from 2018...</p>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm">
+                                        <div>
+                                            <span class="font-medium">STU1002</span>
+                                            <button class="ml-2 text-blue-600 hover:text-blue-800 text-xs">
+                                                <i class="fas fa-search"></i> Trace
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-gray-600">Dec 14, 2024</td>
+                                    <td class="px-6 py-4">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                            resolved
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-gray-500">
+                                        Resolved on Dec 16, 2024
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- @END_COMPONENT: SchoolAdminDashboard -->
+
+        <!-- SCREEN 8: Central Admin Dashboard -->
+        <!-- @COMPONENT: CentralAdminDashboard [Central admin interface for managing all complaints and users] -->
+        <div id="central-admin-dashboard" class="min-h-screen bg-gray-50 hidden" data-mock="true">
+            <!-- Top Navigation -->
+            <nav class="bg-white shadow-sm border-b border-gray-200">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex justify-between items-center h-16">
+                        <div class="flex items-center space-x-4">
+                            <h1 class="text-lg font-semibold text-gray-900">Central Admin Dashboard</h1>
+                            <span class="text-sm bg-purple-100 text-purple-800 px-2 py-1 rounded">
+                                System Administrator
+                            </span>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <span class="text-sm text-gray-600">Admin: <span data-bind="centralAdmin.name">System Admin</span></span>
+                            <button data-event="click:logout" class="text-sm text-gray-500 hover:text-gray-700">
+                                <i class="fas fa-sign-out-alt mr-1"></i> Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <!-- Navigation Tabs -->
+                <div class="mb-8">
+                    <div class="border-b border-gray-200">
+                        <nav class="-mb-px flex space-x-8">
+                            <button class="py-2 px-1 border-b-2 border-primary-500 font-medium text-sm text-primary-600">
+                                All Complaints
+                            </button>
+                            <button class="py-2 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                                User Management
+                            </button>
+                            <button class="py-2 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                                Audit Logs
+                            </button>
+                        </nav>
+                    </div>
+                </div>
+
+                <!-- System Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
+                    <div class="bg-white rounded-lg shadow border border-gray-200 p-6">
+                        <div class="text-center">
+                            <i class="fas fa-clipboard-list text-2xl text-blue-500 mb-2"></i>
+                            <p class="text-sm font-medium text-gray-600">Total Complaints</p>
+                            <p class="text-2xl font-bold text-gray-900" data-bind="systemStats.totalComplaints">45</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow border border-gray-200 p-6">
+                        <div class="text-center">
+                            <i class="fas fa-users text-2xl text-green-500 mb-2"></i>
+                            <p class="text-sm font-medium text-gray-600">Active Students</p>
+                            <p class="text-2xl font-bold text-gray-900" data-bind="systemStats.activeStudents">127</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow border border-gray-200 p-6">
+                        <div class="text-center">
+                            <i class="fas fa-flag text-2xl text-red-500 mb-2"></i>
+                            <p class="text-sm font-medium text-gray-600">Flagged Users</p>
+                            <p class="text-2xl font-bold text-red-600" data-bind="systemStats.flaggedUsers">3</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow border border-gray-200 p-6">
+                        <div class="text-center">
+                            <i class="fas fa-ban text-2xl text-gray-500 mb-2"></i>
+                            <p class="text-sm font-medium text-gray-600">Suspended</p>
+                            <p class="text-2xl font-bold text-gray-900" data-bind="systemStats.suspendedUsers">1</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow border border-gray-200 p-6">
+                        <div class="text-center">
+                            <i class="fas fa-search text-2xl text-purple-500 mb-2"></i>
+                            <p class="text-sm font-medium text-gray-600">Traces Today</p>
+                            <p class="text-2xl font-bold text-gray-900" data-bind="systemStats.tracesToday">7</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- All Complaints Table -->
+                <div class="bg-white rounded-lg shadow border border-gray-200 mb-8">
+                    <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                        <h3 class="text-lg font-semibold text-gray-900">All System Complaints</h3>
+                        <div class="flex space-x-3">
+                            <select class="text-sm border border-gray-300 rounded px-3 py-1">
+                                <option>All Categories</option>
+                                <option>Academics</option>
+                                <option>General</option>
+                                <option>Hostel</option>
+                            </select>
+                            <select class="text-sm border border-gray-300 rounded px-3 py-1">
+                                <option>All Status</option>
+                                <option>Pending</option>
+                                <option>Resolved</option>
+                                <option>False</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Complaint</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <!-- @MAP: allComplaints.map(complaint => ( -->
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 text-sm font-mono text-gray-900" data-bind="complaint.id">#C001</td>
+                                    <td class="px-6 py-4">
+                                        <div>
+                                            <h4 class="font-medium text-gray-900" data-bind="complaint.title">Library noise levels too high</h4>
+                                            <p class="text-sm text-gray-600 truncate max-w-xs" data-bind="complaint.description">The library is consistently noisy...</p>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800" data-bind="complaint.category">
+                                            academics
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm">
+                                        <div class="flex items-center space-x-2">
+                                            <span data-bind="complaint.anonymous" class="text-gray-500">Anonymous</span>
+                                            <button data-event="click:traceComplaint" data-implementation="Show detailed trace with audit log" 
+                                                    class="text-blue-600 hover:text-blue-800 text-xs">
+                                                <i class="fas fa-search"></i> Trace
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-gray-600" data-bind="complaint.createdAt">Dec 15, 2024</td>
+                                    <td class="px-6 py-4">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800" data-bind="complaint.status">
+                                            pending
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm">
+                                        <button data-event="click:viewDetails" data-implementation="Show full complaint details" 
+                                                class="text-blue-600 hover:text-blue-800">
+                                            View Details
+                                        </button>
+                                    </td>
+                                </tr>
+                                <!-- @END_MAP )) -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- User Management Section -->
+                <div class="bg-white rounded-lg shadow border border-gray-200">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900">User Management</h3>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student ID</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Flag Count</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <!-- @MAP: users.map(user => ( -->
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 text-sm font-medium text-gray-900" data-bind="user.regNumber">STU1001</td>
+                                    <td class="px-6 py-4 text-sm text-gray-900" data-bind="user.name">John Doe</td>
+                                    <td class="px-6 py-4 text-sm text-gray-600" data-bind="user.email">john.doe@student.edu</td>
+                                    <td class="px-6 py-4">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800" data-bind="user.flagCount">
+                                            2
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800" data-bind="user.status">
+                                            active
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm space-x-2">
+                                        <button data-event="click:flagUser" data-implementation="Flag user and increment count" 
+                                                class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs">
+                                            Flag
+                                        </button>
+                                        <button data-event="click:unflagUser" data-implementation="Remove flag from user" 
+                                                class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-xs">
+                                            Unflag
+                                        </button>
+                                        <button data-event="click:viewUserDetails" data-implementation="Show user complaint history and details" 
+                                                class="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded text-xs">
+                                            Details
+                                        </button>
+                                    </td>
+                                </tr>
+                                <!-- @END_MAP )) -->
+                                
+                                <!-- Suspended user example -->
+                                <tr class="hover:bg-gray-50 bg-red-50">
+                                    <td class="px-6 py-4 text-sm font-medium text-gray-900">STU1003</td>
+                                    <td class="px-6 py-4 text-sm text-gray-900">Jane Smith</td>
+                                    <td class="px-6 py-4 text-sm text-gray-600">jane.smith@student.edu</td>
+                                    <td class="px-6 py-4">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                            3
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                            suspended
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm space-x-2">
+                                        <button data-event="click:reactivateUser" data-implementation="Reactivate suspended user" 
+                                                class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-xs">
+                                            Reactivate
+                                        </button>
+                                        <button data-event="click:viewUserDetails" 
+                                                class="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded text-xs">
+                                            Details
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- @END_COMPONENT: CentralAdminDashboard -->
+
+        <!-- SCREEN 9: Complaint Trace Modal -->
+        <!-- @COMPONENT: ComplaintTraceModal [Shows traced user details with audit log] -->
+        <div id="complaint-trace-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden" data-mock="true">
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Complaint Trace Results</h3>
+                        <button class="text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Traced User Info -->
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                        <div class="flex items-start space-x-3">
+                            <i class="fas fa-exclamation-triangle text-yellow-500 text-lg mt-1"></i>
+                            <div>
+                                <h4 class="font-medium text-yellow-800">Traced User Information</h4>
+                                <div class="mt-2 text-sm text-yellow-700 space-y-1">
+                                    <p><strong>Student ID:</strong> <span data-bind="tracedUser.regNumber">STU1001</span></p>
+                                    <p><strong>Name:</strong> <span data-bind="tracedUser.name">John Doe</span></p>
+                                    <p><strong>Email:</strong> <span data-bind="tracedUser.email">john.doe@student.edu</span></p>
+                                    <p><strong>Flag Count:</strong> <span data-bind="tracedUser.flagCount">0</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Complaint Details -->
+                    <div class="mb-4">
+                        <h4 class="font-medium text-gray-900 mb-2">Complaint Details</h4>
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h5 class="font-medium text-gray-900 mb-1" data-bind="complaint.title">Library noise levels too high</h5>
+                            <p class="text-sm text-gray-600 mb-2" data-bind="complaint.description">
+                                The library is consistently noisy during study hours, making it difficult to concentrate on studies...
+                            </p>
+                            <div class="flex items-center space-x-4 text-xs text-gray-500">
+                                <span>Category: <span data-bind="complaint.category">academics</span></span>
+                                <span>Submitted: <span data-bind="complaint.createdAt">Dec 15, 2024</span></span>
+                                <span>Anonymous: <span data-bind="complaint.anonymous">Yes</span></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Audit Log -->
+                    <div class="mb-6">
+                        <h4 class="font-medium text-gray-900 mb-2">Audit Log</h4>
+                        <div class="bg-red-50 border border-red-200 rounded-lg p-3 text-sm">
+                            <p class="text-red-800 font-medium">⚠ Trace Action Logged</p>
+                            <p class="text-red-700 mt-1">
+                                Admin <strong data-bind="currentAdmin.name">Dr. Smith</strong> traced anonymous complaint #<span data-bind="complaint.id">C001</span> 
+                                on <span data-bind="currentDateTime">Dec 16, 2024 at 2:30 PM</span>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-3">
+                        <button type="button" data-event="click:closeTrace" 
+                                class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 font-medium py-2 px-4 rounded-lg">
+                            Close
+                        </button>
+                        <button type="button" data-event="click:flagFromTrace" data-implementation="Flag user based on traced complaint" 
+                                class="flex-1 bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded-lg">
+                            Flag This User
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- @END_COMPONENT: ComplaintTraceModal -->
+
+        <!-- SCREEN 10: Resolve Complaint Modal -->
+        <!-- @COMPONENT: ResolveComplaintModal [Admin interface to resolve complaints] -->
+        <div id="resolve-complaint-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden" data-mock="true">
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div class="bg-white rounded-lg shadow-xl max-w-lg w-full p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Resolve Complaint</h3>
+                        <button class="text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Complaint Summary -->
+                    <div class="bg-gray-50 rounded-lg p-4 mb-4">
+                        <h4 class="font-medium text-gray-900 mb-1" data-bind="complaint.title">Library noise levels too high</h4>
+                        <p class="text-sm text-gray-600" data-bind="complaint.description">
+                            The library is consistently noisy during study hours...
+                        </p>
+                    </div>
+                    
+                    <form data-implementation="Submit resolution with note">
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Resolution Note
+                            </label>
+                            <textarea rows="4" placeholder="Describe the actions taken to resolve this complaint..." 
+                                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"></textarea>
+                        </div>
+                        
+                        <div class="flex space-x-3">
+                            <button type="button" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 font-medium py-2 px-4 rounded-lg">
+                                Cancel
+                            </button>
+                            <button type="submit" data-implementation="Mark complaint as resolved with note" 
+                                    class="flex-1 bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded-lg">
+                                Mark as Resolved
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- @END_COMPONENT: ResolveComplaintModal -->
+
+    </div>
+    <!-- @END_COMPONENT: App -->
+
+    <script>
+        // TODO: Implement React Router for navigation between screens
+        // TODO: Implement state management for user authentication
+        // TODO: Implement API calls for all CRUD operations
+        // TODO: Implement form validation and error handling
+        // TODO: Implement real-time updates for admin dashboards
+        
+        (function() {
+            // Mock screen switching for demonstration
+            let currentScreen = 'landing-page';
+            const screens = [
+                'landing-page', 'registration-modal', 'otp-verification', 
+                'password-setup', 'student-dashboard', 'school-admin-dashboard', 
+                'central-admin-dashboard'
+            ];
+            
+            function showScreen(screenId) {
+                screens.forEach(screen => {
+                    const element = document.getElementById(screen);
+                    if (element) {
+                        element.classList.add('hidden');
+                    }
+                });
+                
+                const targetScreen = document.getElementById(screenId);
+                if (targetScreen) {
+                    targetScreen.classList.remove('hidden');
+                    currentScreen = screenId;
+                }
+            }
+            
+            function showModal(modalId) {
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.classList.remove('hidden');
+                }
+            }
+            
+            function hideModal(modalId) {
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.classList.add('hidden');
+                }
+            }
+            
+            // Demo navigation - In real implementation, this would be handled by React Router
+            window.demoNavigation = {
+                showStudentDashboard: () => showScreen('student-dashboard'),
+                showSchoolAdminDashboard: () => showScreen('school-admin-dashboard'),
+                showCentralAdminDashboard: () => showScreen('central-admin-dashboard'),
+                showRegistration: () => showModal('registration-modal'),
+                showAnonymousWarning: () => showModal('anonymous-warning-modal'),
+                showTraceModal: () => showModal('complaint-trace-modal'),
+                showResolveModal: () => showModal('resolve-complaint-modal'),
+                backToLanding: () => showScreen('landing-page')
+            };
+            
+            // Initialize with landing page
+            showScreen('landing-page');
+            
+        })();
+        
+        // Demo buttons for testing different screens (remove in production)
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add demo navigation buttons
+            const demoNav = document.createElement('div');
+            demoNav.className = 'fixed bottom-4 right-4 bg-black bg-opacity-75 text-white p-3 rounded-lg text-xs space-y-1 z-50';
+            demoNav.innerHTML = `
+                <div class="font-semibold mb-2">Demo Navigation:</div>
+                <button onclick="demoNavigation.showStudentDashboard()" class="block w-full text-left hover:bg-gray-700 px-2 py-1 rounded">Student Dashboard</button>
+                <button onclick="demoNavigation.showSchoolAdminDashboard()" class="block w-full text-left hover:bg-gray-700 px-2 py-1 rounded">School Admin</button>
+                <button onclick="demoNavigation.showCentralAdminDashboard()" class="block w-full text-left hover:bg-gray-700 px-2 py-1 rounded">Central Admin</button>
+                <button onclick="demoNavigation.showAnonymousWarning()" class="block w-full text-left hover:bg-gray-700 px-2 py-1 rounded">Anonymous Warning</button>
+                <button onclick="demoNavigation.showTraceModal()" class="block w-full text-left hover:bg-gray-700 px-2 py-1 rounded">Trace Modal</button>
+                <button onclick="demoNavigation.backToLanding()" class="block w-full text-left hover:bg-gray-700 px-2 py-1 rounded">Back to Landing</button>
+            `;
+            document.body.appendChild(demoNav);
+        });
+    </script>
+</body>
+</html>
