@@ -51,7 +51,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/auth/register", async (req, res) => {
     try {
       const { registrationNumber, fullName, email } = registerSchema.parse(req.body);
-      
+
       // Check if user already exists
       const existingUser = await storage.getUserByRegistrationNumber(registrationNumber);
       if (existingUser) {
@@ -91,7 +91,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/auth/verify-otp", async (req, res) => {
     try {
       const { registrationNumber, otpCode } = verifyOtpSchema.parse(req.body);
-      
+
       const user = await storage.getUserByRegistrationNumber(registrationNumber);
       if (!user || user.otpCode !== otpCode || !user.otpExpires || user.otpExpires < new Date()) {
         return res.status(400).json({ message: "Invalid or expired OTP" });
@@ -110,7 +110,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/auth/set-password", async (req, res) => {
     try {
       const { registrationNumber, password } = setPasswordSchema.parse(req.body);
-      
+
       const user = await storage.getUserByRegistrationNumber(registrationNumber);
       if (!user || user.isVerified) {
         return res.status(400).json({ message: "Invalid user or already verified" });
@@ -134,7 +134,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/auth/login", async (req, res) => {
     try {
       const { registrationNumber, password } = loginSchema.parse(req.body);
-      
+
       const user = await storage.getUserByRegistrationNumber(registrationNumber);
       if (!user || !user.password || !user.isVerified) {
         return res.status(401).json({ message: "Invalid credentials" });
@@ -171,7 +171,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/complaints", authenticateToken, requireRole(['student']), async (req: AuthRequest, res) => {
     try {
       const complaintData = complaintSchema.parse(req.body);
-      
+
       const complaint = await storage.createComplaint({
         ...complaintData,
         studentId: req.user!.id,
@@ -209,7 +209,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { id } = req.params;
       const { resolutionNote } = resolveComplaintSchema.parse(req.body);
-      
+
       const complaint = await storage.updateComplaint(parseInt(id), {
         status: 'resolved',
         resolutionNote,
@@ -232,7 +232,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { id } = req.params;
       const { reason } = req.body;
-      
+
       const complaint = await storage.getComplaintById(parseInt(id));
       if (!complaint) {
         return res.status(404).json({ message: "Complaint not found" });
@@ -251,7 +251,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (student) {
         const newFlagCount = student.flagCount + 1;
         const isSuspended = newFlagCount >= 3;
-        
+
         await storage.updateUser(student.id, {
           flagCount: newFlagCount,
           isSuspended,
@@ -272,7 +272,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/admin/complaints/:id/trace", authenticateToken, requireRole(['school_admin', 'central_admin']), async (req: AuthRequest, res) => {
     try {
       const { id } = req.params;
-      
+
       const complaint = await storage.getComplaintById(parseInt(id));
       if (!complaint) {
         return res.status(404).json({ message: "Complaint not found" });
@@ -287,7 +287,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       const student = await storage.getUserById(complaint.studentId);
-      
+
       res.json({
         complaint,
         student: student ? {
@@ -328,7 +328,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/central-admin/users/:id/flag", authenticateToken, requireRole(['central_admin']), async (req: AuthRequest, res) => {
     try {
       const { id } = req.params;
-      
+
       const user = await storage.getUserById(parseInt(id));
       if (!user) {
         return res.status(404).json({ message: "User not found" });
@@ -336,7 +336,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const newFlagCount = user.flagCount + 1;
       const isSuspended = newFlagCount >= 3;
-      
+
       await storage.updateUser(parseInt(id), {
         flagCount: newFlagCount,
         isSuspended,
@@ -356,14 +356,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/central-admin/users/:id/unflag", authenticateToken, requireRole(['central_admin']), async (req: AuthRequest, res) => {
     try {
       const { id } = req.params;
-      
+
       const user = await storage.getUserById(parseInt(id));
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
 
       const newFlagCount = Math.max(0, user.flagCount - 1);
-      
+
       await storage.updateUser(parseInt(id), {
         flagCount: newFlagCount,
         isSuspended: false,
