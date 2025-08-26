@@ -29,14 +29,14 @@ export default function Landing() {
         </div>
       </nav>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 items-center">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Hero Section */}
           <div className="flex flex-col justify-center space-y-8 animate-slide-up">
             <div className="relative">
               <h1 className="text-4xl md:text-6xl font-bold text-gray-900 leading-tight">
                 Student Complaint 
-                <span className="bg-gradient-primary bg-clip-text text-transparent block animate-float">
+                <span className="bg-gradient-primary bg-clip-text text-transparent block">
                   Management Portal
                 </span>
               </h1>
@@ -135,46 +135,6 @@ export default function Landing() {
               </div>
             </div>
 
-            {/* Demo Users Guide */}
-            <div className="glass rounded-2xl border border-blue-200/50 p-6 hover-lift animate-scale-in" style={{animationDelay: '0.7s'}}>
-              <div className="flex items-center mb-4">
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center mr-3">
-                  <span className="text-white text-lg">🎯</span>
-                </div>
-                <h4 className="font-bold text-blue-700">Demo Accounts & Testing Guide</h4>
-              </div>
-              
-              <div className="space-y-4">
-                <div className="bg-white/60 rounded-xl p-4">
-                  <div className="flex items-center mb-2">
-                    <span className="text-lg mr-2">👑</span>
-                    <h5 className="font-semibold text-blue-700">ADMIN LOGIN (Ready to Use)</h5>
-                  </div>
-                  <div className="text-sm text-gray-700 space-y-1 ml-6">
-                    <p>📚 Academics: <code className="bg-blue-100 px-2 py-1 rounded font-mono text-xs">ADMIN_ACADEMICS</code> / <code className="bg-blue-100 px-2 py-1 rounded font-mono text-xs">admin123</code></p>
-                    <p>🏢 General: <code className="bg-blue-100 px-2 py-1 rounded font-mono text-xs">ADMIN_GENERAL</code> / <code className="bg-blue-100 px-2 py-1 rounded font-mono text-xs">admin123</code></p>
-                    <p>🏠 Hostel: <code className="bg-blue-100 px-2 py-1 rounded font-mono text-xs">ADMIN_HOSTEL</code> / <code className="bg-blue-100 px-2 py-1 rounded font-mono text-xs">admin123</code></p>
-                    <p>🌟 Central: <code className="bg-blue-100 px-2 py-1 rounded font-mono text-xs">CENTRAL_ADMIN</code> / <code className="bg-blue-100 px-2 py-1 rounded font-mono text-xs">admin123</code></p>
-                  </div>
-                </div>
-                
-                <div className="bg-white/60 rounded-xl p-4">
-                  <div className="flex items-center mb-2">
-                    <span className="text-lg mr-2">🎓</span>
-                    <h5 className="font-semibold text-green-700">STUDENT REGISTRATION</h5>
-                  </div>
-                  <div className="text-sm text-gray-700 ml-6">
-                    <p className="mb-2">Use these numbers: <code className="bg-green-100 px-2 py-1 rounded font-mono text-xs mx-1">STU1001</code><code className="bg-green-100 px-2 py-1 rounded font-mono text-xs mx-1">STU1002</code><code className="bg-green-100 px-2 py-1 rounded font-mono text-xs mx-1">STU1003</code><code className="bg-green-100 px-2 py-1 rounded font-mono text-xs mx-1">STU1004</code><code className="bg-green-100 px-2 py-1 rounded font-mono text-xs mx-1">STU1005</code></p>
-                    <div className="bg-orange-100 border border-orange-200 rounded-lg p-3 mt-2">
-                      <p className="text-orange-700 font-medium flex items-center">
-                        <span className="text-lg mr-2">⚠️</span>
-                        Check browser console for OTP during registration
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>

@@ -1,161 +1,273 @@
-# Complaint Management System - MVP
+# EduComplaints Management System
 
-A fullstack web application for educational institutions to manage student complaints with role-based access control, OTP authentication, and administrative oversight features.
+A comprehensive fullstack complaint management system designed for educational institutions, featuring role-based access control, OTP authentication, and administrative oversight capabilities.
 
-## Tech Stack
+## 🚀 Architecture
 
-### Frontend
-- **Vite** - Build tool and dev server
-- **React** (JavaScript) - UI framework
-- **Tailwind CSS** - Styling
-- **Wouter** - Client-side routing
-- **TanStack Query** - Data fetching and caching
-- **Shadcn UI** - Component library
+This project has been separated into independent frontend and backend applications for better maintainability and deployment flexibility.
+
+```
+📁 Project Structure
+├── 📂 backend/          # Node.js + Express API Server
+├── 📂 frontend/         # React + Vite Client Application  
+├── 📂 client/           # Legacy frontend (keep for reference)
+├── 📂 server/           # Legacy backend (keep for reference)
+└── 📂 shared/           # Shared types and schemas
+```
+
+## 🛠️ Technology Stack
 
 ### Backend
-- **Node.js** - Runtime environment
-- **Express.js** - Web framework
-- **Sequelize ORM** - Database modeling
-- **MySQL** - Database (preferred) / PostgreSQL supported
-- **JWT** - Authentication
-- **bcryptjs** - Password hashing
+- **Node.js + Express** - RESTful API server
+- **PostgreSQL** - Primary database (auto-configured in Replit)
+- **Sequelize ORM** - Database management and migrations
+- **JWT Authentication** - Stateless authentication with 7-day token expiry
+- **bcryptjs** - Secure password hashing
+- **TypeScript** - Type-safe development
 
-## Features
+### Frontend  
+- **React 18** - Modern UI library with hooks
+- **Vite** - Fast build tool and development server
+- **Tailwind CSS** - Utility-first CSS framework
+- **Shadcn UI** - Beautiful component library
+- **Redux Toolkit** - State management for authentication
+- **TanStack Query** - Server state management and caching
+- **Wouter** - Lightweight client-side routing
 
-### Authentication System
-- **Registration Flow**: Student registration number → Email → OTP verification → Password setup → Login
-- **OTP Verification**: Console-based for testing (configurable to email)
-- **JWT Authentication**: Secure token-based auth with 7-day expiry
-- **Role-based Access**: Three user roles with different permissions
-
-### User Roles
-
-#### 1. Student
-- Submit complaints with title, description, and category (academics/general/hostel)
-- Anonymous complaint option with confirmation warning
-- View complaint history and status updates
-- Track resolution notes and admin responses
-
-#### 2. School Admin
-- Category-specific complaint management
-- Mark complaints as resolved with resolution notes
-- Flag false reports (increments user flag count)
-- Anonymous complaint tracing with audit logging
-
-#### 3. Central Admin
-- System-wide complaint overview across all categories
-- User management and flagging capabilities
-- Audit log access for administrative actions
-- User account suspension/reactivation
-
-### Security & Compliance
-- **Anonymous Tracing**: Admins can trace anonymous complaints with audit trail
-- **Flagging System**: False reports increment user flag count
-- **Auto-suspension**: Accounts suspended when flag count ≥ 3
-- **Audit Logging**: All administrative actions logged for compliance
-
-## Development Setup
+## 🏃‍♂️ Quick Start
 
 ### Prerequisites
-- Node.js 18+ and npm
-- PostgreSQL 13+ (automatically provided in Replit)
+- Node.js 18+ installed
+- PostgreSQL database (automatically configured in Replit)
 
-### Step-by-Step Guide
+### Backend Setup
 
-#### Step 1: Install Dependencies
-The dependencies should already be installed, but if needed:
+1. **Navigate to backend directory:**
+   ```bash
+   cd backend
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables:**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your database configuration
+   ```
+
+4. **Run database migrations and seed:**
+   ```bash
+   npm run db:push
+   npm run seed
+   ```
+
+5. **Start the development server:**
+   ```bash
+   npm run dev
+   ```
+   
+   The API server will be running at `http://localhost:5000`
+
+### Frontend Setup
+
+1. **Navigate to frontend directory:**
+   ```bash
+   cd frontend
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables:**
+   ```bash
+   cp .env.example .env
+   # Configure VITE_API_URL to point to your backend
+   ```
+
+4. **Start the development server:**
+   ```bash
+   npm run dev
+   ```
+   
+   The React app will be running at `http://localhost:3000`
+
+## 👥 User Roles & Access
+
+### 🎓 Students
+- Submit complaints across categories (Academic, Hostel, General)
+- Optional anonymous complaint submission
+- Real-time status tracking and updates
+- View complete complaint history
+- **Test Account:** `STU1001` / `password123`
+
+### 🏫 School Admins  
+- Category-specific complaint management
+- Resolve complaints with detailed notes
+- Trace anonymous complaints (with audit logging)
+- Flag false/inappropriate complaints
+- **Test Account:** `ADMIN_ACADEMICS` / `admin123`
+
+### 🛡️ Central Admins
+- System-wide complaint oversight
+- User account management and suspension
+- Comprehensive audit log access
+- Platform administration tools
+- **Test Account:** `CENTRAL_ADMIN` / `admin123`
+
+## 🔧 API Endpoints
+
+### Authentication
+- `POST /api/auth/register` - Multi-step registration process
+- `POST /api/auth/verify-otp` - OTP verification
+- `POST /api/auth/set-password` - Password setup
+- `POST /api/auth/login` - User authentication
+- `GET /api/auth/me` - Get current user info
+
+### Complaints (Students)
+- `POST /api/complaints` - Submit new complaint
+- `GET /api/complaints/my` - Get user's complaints
+
+### Admin Management
+- `GET /api/admin/complaints` - Get complaints by category
+- `PUT /api/complaints/:id/resolve` - Resolve complaint
+- `POST /api/admin/trace/:id` - Trace anonymous complaint
+
+### Central Admin
+- `GET /api/central-admin/users` - User management
+- `GET /api/central-admin/audit-logs` - Audit trail
+- `PUT /api/admin/users/:id/suspend` - Suspend user accounts
+
+## 🗄️ Database Schema
+
+### Users Table
+- Registration number validation through Students table
+- Role-based access control (student, school_admin, central_admin)
+- Account flagging and suspension capabilities
+- Full name field for complete user profiles
+
+### Complaints Table
+- Categorized complaints (academics, hostel, general)
+- Status tracking (pending, resolved, false)
+- Anonymous submission support with tracing capability
+- Resolution notes and timestamps
+
+### Audit Logs Table
+- Comprehensive action tracking for administrative activities
+- Admin accountability and transparency
+- Complaint tracing history
+
+## 🔒 Security Features
+
+### Authentication & Authorization
+- JWT-based stateless authentication
+- Role-based route protection
+- Secure password hashing with bcryptjs
+- Multi-step registration with OTP verification
+
+### Privacy & Anonymity
+- Optional anonymous complaint submission
+- Admin tracing capability with audit logging
+- User flagging system with automatic suspension
+- Secure session management
+
+## 🚀 Deployment
+
+### Backend Deployment
 ```bash
-npm install
-```
-
-#### Step 2: Database Setup
-The PostgreSQL database is automatically configured in Replit. The connection details are provided via environment variables:
-- `DATABASE_URL` - Complete database connection string
-- `PGHOST`, `PGPORT`, `PGUSER`, `PGPASSWORD`, `PGDATABASE` - Individual connection parameters
-
-#### Step 3: Start the Application
-In Replit, simply **click the "Run" button** or use the workflow named "Start application". This runs:
-```bash
-npm run dev
-```
-
-This single command starts both:
-- **Backend server** on port 5000 (Express.js API)
-- **Frontend development server** (Vite with React)
-
-#### Step 4: Access the Application
-The application will automatically open in Replit's webview. You can also access it via the generated URL.
-
-### What Happens When You Run the App
-
-1. **Database Connection**: Automatically connects to PostgreSQL using Replit's environment variables
-2. **Database Sync**: Creates and synchronizes all required tables:
-   - Users (with roles, flagging, and suspension capabilities)
-   - Students (for registration validation)
-   - Complaints (with status tracking and resolution notes)
-   - AuditLogs (for administrative action tracking)
-3. **Server Start**: Express.js API server starts on port 5000
-4. **Frontend Build**: Vite development server with hot module replacement
-5. **Ready to Use**: Registration and login pages become available
-
-### Production Build
-
-```bash
-# Build the application
+cd backend
 npm run build
-
-# Start production server
 npm start
 ```
 
-### Project Structure
-
-```
-├── client/               # Frontend (React + Vite)
-│   ├── src/             # React components and pages
-│   │   ├── components/  # Reusable UI components
-│   │   ├── pages/       # Route-based page components
-│   │   └── hooks/       # Custom React hooks
-│   └── index.html       # HTML entry point
-├── server/              # Backend (Express.js)
-│   ├── index.ts         # Main server file
-│   ├── routes.ts        # API routes
-│   ├── storage.ts       # Database operations
-│   └── models/          # Database models
-├── shared/              # Shared types and schemas
-│   └── schema.ts        # Database schema definitions
-└── package.json         # Dependencies and scripts
-```
-
-### First Time Setup
-
-1. **Click the Run button** - This will start both frontend and backend
-2. **Wait for database sync** - You'll see "Database synchronized" in the console
-3. **Access the app** - The webview will show the login/registration page
-4. **Create an account** - Use the registration flow to set up your first user
-
-### Available Scripts
-
+### Frontend Deployment
 ```bash
-# Start both frontend and backend in development mode
-npm run dev
-
-# Build the application for production
+cd frontend
 npm run build
-
-# Start production server
-npm start
-
-# Type checking
-npm run check
-
-# Database operations
-npm run db:push
+# Deploy the dist/ folder to your hosting provider
 ```
 
-### Troubleshooting
+### Environment Variables
 
-- **Database connection issues**: The database should connect automatically using Replit's environment variables
-- **Port conflicts**: The app uses port 5000 for the backend, Vite handles the frontend
-- **Build errors**: Check the console for any missing dependencies or TypeScript errors
+**Backend (.env):**
+```
+NODE_ENV=production
+JWT_SECRET=your-super-secret-jwt-key
+DATABASE_URL=your-postgresql-connection-string
+```
 
+**Frontend (.env):**
+```
+VITE_API_URL=https://your-backend-domain.com
+```
+
+## 🧪 Testing Accounts
+
+The system comes pre-seeded with test accounts for all user types:
+
+**Students:**
+- STU1001, STU1002, STU1003, STU1004, STU1005
+- Password: `password123` for all student accounts
+
+**School Admins:**
+- ADMIN_ACADEMICS (Academic complaints)
+- ADMIN_HOSTEL (Hostel complaints)  
+- ADMIN_GENERAL (General complaints)
+- Password: `admin123` for all admin accounts
+
+**Central Admin:**
+- CENTRAL_ADMIN
+- Password: `admin123`
+
+## 🎨 UI Components
+
+The frontend uses a modern design system built with:
+- **Shadcn UI** - Consistent, accessible components
+- **Tailwind CSS** - Utility-first styling
+- **Lucide React** - Beautiful icons
+- **Framer Motion** - Smooth animations
+- **Responsive Design** - Works on all device sizes
+
+## 📚 Development
+
+### Code Structure
+```
+backend/
+├── config/         # Database configuration
+├── middleware/     # Express middlewares (auth, etc.)
+├── models/         # Sequelize models
+├── shared/         # Shared types and schemas
+├── index.ts        # Express server entry point
+└── routes.ts       # API route definitions
+
+frontend/
+├── src/
+│   ├── components/ # Reusable UI components
+│   ├── pages/      # Route components
+│   ├── hooks/      # Custom React hooks
+│   ├── lib/        # Utilities and configurations
+│   └── store/      # Redux store and slices
+└── public/         # Static assets
+```
+
+### Contributing
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
+
+## 📞 Support
+
+For issues and questions:
+- Check the [Issues](../../issues) section
+- Review the documentation
+- Contact the development team
+
+---
+
+**Built with ❤️ for educational institutions seeking efficient complaint management solutions.**
