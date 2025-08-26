@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { authService } from "@/lib/auth";
+import { useAuth } from "@/hooks/useAuth";
 import { useLocation } from "wouter";
 import AnonymousWarningModal from "@/components/complaints/anonymous-warning-modal";
 
@@ -21,8 +21,7 @@ export default function StudentDashboard() {
   const [showAnonymousWarning, setShowAnonymousWarning] = useState(false);
   const { toast } = useToast();
   const [, setLocation] = useLocation();
-  
-  const user = authService.getUser();
+  const { user, logout } = useAuth();
 
   const { data: complaints = [], isLoading } = useQuery({
     queryKey: ['/api/complaints/my'],
@@ -58,15 +57,34 @@ export default function StudentDashboard() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Form submitted with:', { title, description, category, isAnonymous });
+    
+    if (!title || !description || !category) {
+      toast({
+        title: "Error",
+        description: "Please fill in all required fields",
+        variant: "destructive",
+      });
+      return;
+    }
     
     if (isAnonymous) {
+      console.log('Showing anonymous warning modal');
       setShowAnonymousWarning(true);
     } else {
+      console.log('Submitting complaint directly');
       submitComplaint();
     }
   };
 
   const submitComplaint = () => {
+    console.log('submitComplaint called with data:', {
+      title,
+      description,
+      category,
+      isAnonymous,
+    });
+    
     createComplaintMutation.mutate({
       title,
       description,
@@ -81,7 +99,7 @@ export default function StudentDashboard() {
   };
 
   const handleLogout = () => {
-    authService.clearAuth();
+    logout();
     setLocation('/');
   };
 
@@ -184,25 +202,41 @@ export default function StudentDashboard() {
                   />
                 </div>
                 
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-3 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
                   <Checkbox
                     id="anonymous"
                     checked={isAnonymous}
-                    onCheckedChange={(checked) => setIsAnonymous(checked as boolean)}
+                    onCheckedChange={(checked) => {
+                      console.log('Anonymous checkbox changed:', checked);
+                      setIsAnonymous(checked as boolean);
+                    }}
                     data-testid="checkbox-anonymous"
+                    className="border-2"
                   />
-                  <Label htmlFor="anonymous" className="text-sm text-gray-700">Submit anonymously</Label>
-                  <i className="fas fa-info-circle text-gray-400" title="Anonymous submissions can still be traced by administrators"></i>
+                  <Label htmlFor="anonymous" className="text-sm text-gray-700 font-medium cursor-pointer">
+                    Submit anonymously
+                  </Label>
+                  <i className="fas fa-info-circle text-yellow-600" title="Anonymous submissions can still be traced by administrators"></i>
                 </div>
                 
                 <div className="pt-2">
                   <Button 
                     type="submit" 
-                    disabled={createComplaintMutation.isPending}
-                    className="bg-primary-500 hover:bg-primary-600"
+                    disabled={createComplaintMutation.isPending || !title || !description || !category}
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors"
                     data-testid="button-submit-complaint"
                   >
-                    {createComplaintMutation.isPending ? 'Submitting...' : 'Submit Complaint'}
+                    {createComplaintMutation.isPending ? (
+                      <>
+                        <i className="fas fa-spinner fa-spin mr-2"></i>
+                        Submitting...
+                      </>
+                    ) : (
+                      <>
+                        <i className="fas fa-paper-plane mr-2"></i>
+                        Submit Complaint
+                      </>
+                    )}
                   </Button>
                 </div>
               </form>

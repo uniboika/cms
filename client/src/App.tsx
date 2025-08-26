@@ -8,12 +8,12 @@ import Landing from "@/pages/landing";
 import StudentDashboard from "@/pages/student-dashboard";
 import SchoolAdminDashboard from "@/pages/school-admin-dashboard";
 import CentralAdminDashboard from "@/pages/central-admin-dashboard";
-import { authService } from "@/lib/auth";
+import { useAuth } from "@/hooks/useAuth";
 
 function ProtectedRoute({ component: Component, allowedRoles }: { component: any, allowedRoles: string[] }) {
-  const user = authService.getUser();
+  const { isAuthenticated, user } = useAuth();
   
-  if (!authService.isAuthenticated() || !user) {
+  if (!isAuthenticated || !user) {
     return <Redirect to="/" />;
   }
 
