@@ -339,7 +339,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/central-admin/users", authenticateToken, requireRole(['central_admin']), async (req: AuthRequest, res) => {
     try {
-      const users = await storage.getAllStudents();
+      const users = await storage.getAllUsers();
       res.json(users);
     } catch (error) {
       console.error("Get users error:", error);
@@ -395,6 +395,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Unflag user error:", error);
       res.status(400).json({ message: "Failed to unflag user" });
+    }
+  });
+
+  app.post("/api/central-admin/users/:id/reactivate", authenticateToken, requireRole(['central_admin']), async (req: AuthRequest, res) => {
+    try {
+      const { id } = req.params;
+
+      const user = await storage.getUserById(parseInt(id));
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      await storage.updateUser(parseInt(id), {
+        flagCount: 0,
+        isSuspended: false,
+      });
+
+      res.json({ message: "User reactivated successfully" });
+    } catch (error) {
+      console.error("Reactivate user error:", error);
+      res.status(400).json({ message: "Failed to reactivate user" });
     }
   });
 

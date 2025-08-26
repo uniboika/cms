@@ -22,6 +22,7 @@ export interface IStorage {
   // Students
   getStudentByRegistrationNumber(regNumber: string): Promise<Student | null>;
   getAllStudents(): Promise<Student[]>;
+  getAllUsers(): Promise<User[]>;
 
   // Complaints
   createComplaint(complaintData: any): Promise<Complaint>;
@@ -73,7 +74,16 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllStudents(): Promise<Student[]> {
-    return await Student.findAll();
+    return await Student.findAll({
+      order: [['createdAt', 'DESC']],
+    });
+  }
+
+  async getAllUsers() {
+    return await User.findAll({
+      attributes: { exclude: ['password', 'otpCode', 'otpExpires'] },
+      order: [['createdAt', 'DESC']],
+    });
   }
 
   async createComplaint(complaintData: any): Promise<Complaint> {

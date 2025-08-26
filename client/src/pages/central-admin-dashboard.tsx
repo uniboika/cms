@@ -13,8 +13,13 @@ import TraceModal from "@/components/complaints/trace-modal";
 export default function CentralAdminDashboard() {
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
   const [traceData, setTraceData] = useState<any>(null);
   const [showTraceModal, setShowTraceModal] = useState(false);
+  const [selectedComplaint, setSelectedComplaint] = useState<any>(null);
+  const [showComplaintDetails, setShowComplaintDetails] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [showUserDetails, setShowUserDetails] = useState(false);
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const { user, logout } = useAuth();
@@ -103,6 +108,27 @@ export default function CentralAdminDashboard() {
     },
   });
 
+  const reactivateUserMutation = useMutation({
+    mutationFn: async (userId: number) => {
+      const response = await apiRequest('POST', `/api/central-admin/users/${userId}/reactivate`, {});
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/central-admin/users'] });
+      toast({
+        title: "Success",
+        description: "User reactivated successfully",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to reactivate user",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleTrace = (complaint: any) => {
     traceMutation.mutate(complaint.id);
   };
@@ -115,6 +141,20 @@ export default function CentralAdminDashboard() {
     unflagUserMutation.mutate(userId);
   };
 
+  const handleReactivateUser = (userId: number) => {
+    reactivateUserMutation.mutate(userId);
+  };
+
+  const handleViewComplaintDetails = (complaint: any) => {
+    setSelectedComplaint(complaint);
+    setShowComplaintDetails(true);
+  };
+
+  const handleViewUserDetails = (user: any) => {
+    setSelectedUser(user);
+    setShowUserDetails(true);
+  };
+
   const handleLogout = () => {
     logout();
     setLocation('/');
@@ -123,6 +163,15 @@ export default function CentralAdminDashboard() {
   const filteredComplaints = complaintsArray.filter((complaint: any) => {
     if (categoryFilter !== 'all' && complaint.category !== categoryFilter) return false;
     if (statusFilter !== 'all' && complaint.status !== statusFilter) return false;
+    if (searchTerm) {
+      const searchLower = searchTerm.toLowerCase();
+      return (
+        complaint.title.toLowerCase().includes(searchLower) ||
+        complaint.id.toString().includes(searchLower) ||
+        complaint.description.toLowerCase().includes(searchLower) ||
+        (complaint.student?.registrationNumber && complaint.student.registrationNumber.toLowerCase().includes(searchLower))
+      );
+    }
     return true;
   });
 
@@ -241,9 +290,19 @@ export default function CentralAdminDashboard() {
           {/* All Complaints Tab */}
           <TabsContent value="complaints">
             <div className="bg-white rounded-lg shadow border border-gray-200">
-              <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-                <h3 className="text-lg font-semibold text-gray-900">All System Complaints</h3>
+              <div className="px-6 py-4 border-b border-gray-200">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900">All System Complaints</h3>
+                </div>
                 <div className="flex space-x-3">
+                  <input
+                    type="text"
+                    placeholder="Search by title, ID, or student..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm"
+                    data-testid="input-search-complaints"
+                  />
                   <Select value={categoryFilter} onValueChange={setCategoryFilter}>
                     <SelectTrigger className="w-40" data-testid="select-category-filter">
                       <SelectValue />
@@ -353,6 +412,7 @@ export default function CentralAdminDashboard() {
                           </td>
                           <td className="px-6 py-4 text-sm">
                             <button 
+                              onClick={() => handleViewComplaintDetails(complaint)}
                               className="text-blue-600 hover:text-blue-800"
                               data-testid={`button-view-details-${complaint.id}`}
                             >
@@ -451,8 +511,8 @@ export default function CentralAdminDashboard() {
                             ) : (
                               <Button
                                 size="sm"
-                                onClick={() => handleUnflagUser(user.id)}
-                                disabled={unflagUserMutation.isPending}
+                                onClick={() => handleReactivateUser(user.id)}
+                                disabled={reactivateUserMutation.isPending}
                                 className="bg-green-500 hover:bg-green-600 text-white"
                                 data-testid={`button-reactivate-user-${user.id}`}
                               >
@@ -462,6 +522,7 @@ export default function CentralAdminDashboard() {
                             <Button
                               size="sm"
                               variant="outline"
+                              onClick={() => handleViewUserDetails(user)}
                               data-testid={`button-view-user-details-${user.id}`}
                             >
                               Details
@@ -527,6 +588,166 @@ export default function CentralAdminDashboard() {
         traceData={traceData}
         currentAdmin={user}
       />
+
+      {/* Complaint Details Modal */}
+      {showComplaintDetails && selectedComplaint && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[80vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">Complaint Details</h3>
+              <button
+                onClick={() => setShowComplaintDetails(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <i className="fas fa-times"></i>
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">ID</label>
+                <p className="text-sm text-gray-900">#{selectedComplaint.id}</p>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Title</label>
+                <p className="text-sm text-gray-900">{selectedComplaint.title}</p>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Description</label>
+                <p className="text-sm text-gray-900">{selectedComplaint.description}</p>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Category</label>
+                  <Badge className={
+                    selectedComplaint.category === 'academics' ? 'bg-blue-100 text-blue-800' :
+                    selectedComplaint.category === 'hostel' ? 'bg-purple-100 text-purple-800' :
+                    'bg-green-100 text-green-800'
+                  }>
+                    {selectedComplaint.category}
+                  </Badge>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Status</label>
+                  <Badge variant={
+                    selectedComplaint.status === 'resolved' ? 'default' : 
+                    selectedComplaint.status === 'false' ? 'destructive' : 
+                    'secondary'
+                  }>
+                    {selectedComplaint.status}
+                  </Badge>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Student</label>
+                  <p className="text-sm text-gray-900">
+                    {selectedComplaint.isAnonymous ? "Anonymous" : selectedComplaint.student?.registrationNumber}
+                  </p>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Anonymous</label>
+                  <p className="text-sm text-gray-900">{selectedComplaint.isAnonymous ? "Yes" : "No"}</p>
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Submitted Date</label>
+                <p className="text-sm text-gray-900">{new Date(selectedComplaint.createdAt).toLocaleString()}</p>
+              </div>
+              
+              {selectedComplaint.resolutionNote && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Resolution Note</label>
+                  <p className="text-sm text-gray-900">{selectedComplaint.resolutionNote}</p>
+                </div>
+              )}
+              
+              {selectedComplaint.resolvedAt && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Resolved Date</label>
+                  <p className="text-sm text-gray-900">{new Date(selectedComplaint.resolvedAt).toLocaleString()}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* User Details Modal */}
+      {showUserDetails && selectedUser && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-lg w-full mx-4">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">User Details</h3>
+              <button
+                onClick={() => setShowUserDetails(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <i className="fas fa-times"></i>
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Registration Number</label>
+                <p className="text-sm text-gray-900">{selectedUser.registrationNumber}</p>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Full Name</label>
+                <p className="text-sm text-gray-900">{selectedUser.fullName || selectedUser.name}</p>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Email</label>
+                <p className="text-sm text-gray-900">{selectedUser.email}</p>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Flag Count</label>
+                  <Badge variant={selectedUser.flagCount > 0 ? "destructive" : "default"}>
+                    {selectedUser.flagCount || 0}
+                  </Badge>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Status</label>
+                  <Badge variant={selectedUser.isSuspended ? "destructive" : "default"}>
+                    {selectedUser.isSuspended ? "Suspended" : "Active"}
+                  </Badge>
+                </div>
+              </div>
+              
+              {selectedUser.role && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Role</label>
+                  <p className="text-sm text-gray-900">{selectedUser.role}</p>
+                </div>
+              )}
+              
+              {selectedUser.category && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Category</label>
+                  <p className="text-sm text-gray-900">{selectedUser.category}</p>
+                </div>
+              )}
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Joined Date</label>
+                <p className="text-sm text-gray-900">{new Date(selectedUser.createdAt).toLocaleString()}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
