@@ -99,6 +99,31 @@ export default function Landing() {
                 </button>
               </div>
             </div>
+
+            {/* Demo Users Guide */}
+            <div className="bg-blue-50 rounded-lg border border-blue-200 p-4">
+              <p className="text-sm font-medium text-blue-700 mb-3">🎯 Demo Accounts & Testing Guide:</p>
+              
+              <div className="space-y-3">
+                <div>
+                  <p className="text-xs font-semibold text-blue-700 mb-1">👑 ADMIN LOGIN (Ready to Use):</p>
+                  <div className="text-xs text-gray-600 space-y-1 ml-2">
+                    <p>📚 Academics: <code className="bg-white px-1 rounded">ADMIN_ACADEMICS</code> / <code className="bg-white px-1 rounded">admin123</code></p>
+                    <p>🏢 General: <code className="bg-white px-1 rounded">ADMIN_GENERAL</code> / <code className="bg-white px-1 rounded">admin123</code></p>
+                    <p>🏠 Hostel: <code className="bg-white px-1 rounded">ADMIN_HOSTEL</code> / <code className="bg-white px-1 rounded">admin123</code></p>
+                    <p>🌟 Central: <code className="bg-white px-1 rounded">CENTRAL_ADMIN</code> / <code className="bg-white px-1 rounded">admin123</code></p>
+                  </div>
+                </div>
+                
+                <div>
+                  <p className="text-xs font-semibold text-green-700 mb-1">🎓 STUDENT REGISTRATION:</p>
+                  <div className="text-xs text-gray-600 ml-2">
+                    <p className="mb-1">Use these numbers: <code className="bg-white px-1 rounded">STU1001</code>, <code className="bg-white px-1 rounded">STU1002</code>, <code className="bg-white px-1 rounded">STU1003</code>, <code className="bg-white px-1 rounded">STU1004</code>, <code className="bg-white px-1 rounded">STU1005</code></p>
+                    <p className="text-orange-600">⚠️ Check browser console for OTP during registration</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

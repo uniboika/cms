@@ -64,7 +64,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllStudents(): Promise<Student[]> {
-    return await Student.find();
+    return await Student.findAll();
   }
 
   async createComplaint(complaintData: any): Promise<Complaint> {

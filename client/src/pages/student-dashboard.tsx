@@ -29,6 +29,8 @@ export default function StudentDashboard() {
     enabled: !!user,
   });
 
+  const complaintsArray = Array.isArray(complaints) ? complaints : [];
+
   const createComplaintMutation = useMutation({
     mutationFn: async (complaintData: any) => {
       const response = await apiRequest('POST', '/api/complaints', complaintData);
@@ -186,7 +188,7 @@ export default function StudentDashboard() {
                   <Checkbox
                     id="anonymous"
                     checked={isAnonymous}
-                    onCheckedChange={setIsAnonymous}
+                    onCheckedChange={(checked) => setIsAnonymous(checked as boolean)}
                     data-testid="checkbox-anonymous"
                   />
                   <Label htmlFor="anonymous" className="text-sm text-gray-700">Submit anonymously</Label>
@@ -215,10 +217,10 @@ export default function StudentDashboard() {
               <div className="divide-y divide-gray-200">
                 {isLoading ? (
                   <div className="px-6 py-8 text-center text-gray-500">Loading complaints...</div>
-                ) : complaints.length === 0 ? (
+                ) : complaintsArray.length === 0 ? (
                   <div className="px-6 py-8 text-center text-gray-500">No complaints submitted yet</div>
                 ) : (
-                  complaints.map((complaint: any) => (
+                  complaintsArray.map((complaint: any) => (
                     <div key={complaint.id} className={`px-6 py-4 ${complaint.status === 'resolved' ? 'bg-green-50' : ''}`}>
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
@@ -281,19 +283,19 @@ export default function StudentDashboard() {
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-gray-600">Total Complaints</span>
                   <span className="font-medium text-gray-900" data-testid="text-total-complaints">
-                    {complaints.length}
+                    {complaintsArray.length}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-gray-600">Pending</span>
                   <span className="font-medium text-yellow-600" data-testid="text-pending-complaints">
-                    {complaints.filter((c: any) => c.status === 'pending').length}
+                    {complaintsArray.filter((c: any) => c.status === 'pending').length}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-gray-600">Resolved</span>
                   <span className="font-medium text-green-600" data-testid="text-resolved-complaints">
-                    {complaints.filter((c: any) => c.status === 'resolved').length}
+                    {complaintsArray.filter((c: any) => c.status === 'resolved').length}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">

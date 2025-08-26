@@ -35,6 +35,10 @@ export default function CentralAdminDashboard() {
     enabled: !!user,
   });
 
+  const complaintsArray = Array.isArray(complaints) ? complaints : [];
+  const usersArray = Array.isArray(users) ? users : [];
+  const auditLogsArray = Array.isArray(auditLogs) ? auditLogs : [];
+
   const traceMutation = useMutation({
     mutationFn: async (complaintId: number) => {
       const response = await apiRequest('POST', `/api/admin/complaints/${complaintId}/trace`, {});
@@ -112,18 +116,18 @@ export default function CentralAdminDashboard() {
     setLocation('/');
   };
 
-  const filteredComplaints = complaints.filter((complaint: any) => {
+  const filteredComplaints = complaintsArray.filter((complaint: any) => {
     if (categoryFilter !== 'all' && complaint.category !== categoryFilter) return false;
     if (statusFilter !== 'all' && complaint.status !== statusFilter) return false;
     return true;
   });
 
   const systemStats = {
-    totalComplaints: complaints.length,
-    activeStudents: users.filter((u: any) => !u.isSuspended).length,
-    flaggedUsers: users.filter((u: any) => u.flagCount > 0).length,
-    suspendedUsers: users.filter((u: any) => u.isSuspended).length,
-    tracesToday: auditLogs.filter((log: any) => 
+    totalComplaints: complaintsArray.length,
+    activeStudents: usersArray.filter((u: any) => !u.isSuspended).length,
+    flaggedUsers: usersArray.filter((u: any) => u.flagCount > 0).length,
+    suspendedUsers: usersArray.filter((u: any) => u.isSuspended).length,
+    tracesToday: auditLogsArray.filter((log: any) => 
       log.action === 'trace_complaint' && 
       new Date(log.createdAt).toDateString() === new Date().toDateString()
     ).length,
@@ -377,12 +381,12 @@ export default function CentralAdminDashboard() {
                       <tr>
                         <td colSpan={6} className="px-6 py-8 text-center text-gray-500">Loading users...</td>
                       </tr>
-                    ) : users.length === 0 ? (
+                    ) : usersArray.length === 0 ? (
                       <tr>
                         <td colSpan={6} className="px-6 py-8 text-center text-gray-500">No users found</td>
                       </tr>
                     ) : (
-                      users.map((user: any) => (
+                      usersArray.map((user: any) => (
                         <tr key={user.id} className={`hover:bg-gray-50 ${user.isSuspended ? 'bg-red-50' : ''}`}>
                           <td className="px-6 py-4 text-sm font-medium text-gray-900" data-testid={`text-user-reg-${user.id}`}>
                             {user.registrationNumber}
@@ -471,10 +475,10 @@ export default function CentralAdminDashboard() {
               <div className="divide-y divide-gray-200">
                 {auditLoading ? (
                   <div className="px-6 py-8 text-center text-gray-500">Loading audit logs...</div>
-                ) : auditLogs.length === 0 ? (
+                ) : auditLogsArray.length === 0 ? (
                   <div className="px-6 py-8 text-center text-gray-500">No audit logs found</div>
                 ) : (
-                  auditLogs.map((log: any) => (
+                  auditLogsArray.map((log: any) => (
                     <div key={log.id} className="px-6 py-4">
                       <div className="flex items-start space-x-3">
                         <i className="fas fa-history text-gray-400 mt-1"></i>

@@ -27,6 +27,8 @@ export default function SchoolAdminDashboard() {
     enabled: !!user,
   });
 
+  const complaintsArray = Array.isArray(complaints) ? complaints : [];
+
   const traceMutation = useMutation({
     mutationFn: async (complaintId: number) => {
       const response = await apiRequest('POST', `/api/admin/complaints/${complaintId}/trace`, {});
@@ -124,16 +126,16 @@ export default function SchoolAdminDashboard() {
     setLocation('/');
   };
 
-  const filteredComplaints = complaints.filter((complaint: any) => {
+  const filteredComplaints = complaintsArray.filter((complaint: any) => {
     if (statusFilter === 'all') return true;
     return complaint.status === statusFilter;
   });
 
   const stats = {
-    total: complaints.length,
-    pending: complaints.filter((c: any) => c.status === 'pending').length,
-    resolved: complaints.filter((c: any) => c.status === 'resolved').length,
-    false: complaints.filter((c: any) => c.status === 'false').length,
+    total: complaintsArray.length,
+    pending: complaintsArray.filter((c: any) => c.status === 'pending').length,
+    resolved: complaintsArray.filter((c: any) => c.status === 'resolved').length,
+    false: complaintsArray.filter((c: any) => c.status === 'false').length,
   };
 
   if (!user) {
