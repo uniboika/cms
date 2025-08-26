@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { authService } from "@/lib/auth";
+import { useAuth } from "@/hooks/useAuth";
 import { useLocation } from "wouter";
 import TraceModal from "@/components/complaints/trace-modal";
 import ResolveModal from "@/components/complaints/resolve-modal";
@@ -19,8 +19,7 @@ export default function SchoolAdminDashboard() {
   const [resolveType, setResolveType] = useState<'resolve' | 'false'>('resolve');
   const { toast } = useToast();
   const [, setLocation] = useLocation();
-  
-  const user = authService.getUser();
+  const { user, logout } = useAuth();
 
   const { data: complaints = [], isLoading } = useQuery({
     queryKey: ['/api/admin/complaints'],
@@ -122,7 +121,7 @@ export default function SchoolAdminDashboard() {
   };
 
   const handleLogout = () => {
-    authService.clearAuth();
+    logout();
     setLocation('/');
   };
 
