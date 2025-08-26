@@ -21,10 +21,15 @@ export default function SchoolAdminDashboard() {
   const [, setLocation] = useLocation();
   const { user, logout } = useAuth();
 
-  const { data: complaints = [], isLoading } = useQuery({
+  const { data: complaints = [], isLoading, error } = useQuery({
     queryKey: ['/api/admin/complaints'],
     enabled: !!user,
   });
+
+  console.log('User:', user);
+  console.log('Complaints:', complaints);
+  console.log('Loading:', isLoading);
+  console.log('Error:', error);
 
   const complaintsArray = Array.isArray(complaints) ? complaints : [];
 
@@ -138,7 +143,14 @@ export default function SchoolAdminDashboard() {
   };
 
   if (!user) {
-    return null;
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading user data...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -248,9 +260,17 @@ export default function SchoolAdminDashboard() {
                   <tr>
                     <td colSpan={5} className="px-6 py-8 text-center text-gray-500">Loading complaints...</td>
                   </tr>
+                ) : error ? (
+                  <tr>
+                    <td colSpan={5} className="px-6 py-8 text-center text-red-500">
+                      Error loading complaints: {error.message}
+                    </td>
+                  </tr>
                 ) : filteredComplaints.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="px-6 py-8 text-center text-gray-500">No complaints found</td>
+                    <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
+                      No complaints found for {user?.category} category
+                    </td>
                   </tr>
                 ) : (
                   filteredComplaints.map((complaint: any) => (

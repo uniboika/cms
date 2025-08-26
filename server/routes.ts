@@ -217,7 +217,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // School admin routes
   app.get("/api/admin/complaints", authenticateToken, requireRole(['school_admin']), async (req: AuthRequest, res) => {
     try {
+      console.log("Admin complaints request - User:", req.user?.registrationNumber, "Category:", req.user?.category);
       const complaints = await storage.getComplaintsByCategory(req.user!.category!);
+      console.log("Found complaints:", complaints.length);
       res.json(complaints);
     } catch (error) {
       console.error("Get admin complaints error:", error);
