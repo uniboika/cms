@@ -58,53 +58,45 @@ A fullstack web application for educational institutions to manage student compl
 
 ### Prerequisites
 - Node.js 18+ and npm
-- MySQL 8.0+ or PostgreSQL 13+
-- Git
+- PostgreSQL 13+ (automatically provided in Replit)
 
-### Installation Steps
+### Step-by-Step Guide
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd complaint-management-system
-   ```
+#### Step 1: Install Dependencies
+The dependencies should already be installed, but if needed:
+```bash
+npm install
+```
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+#### Step 2: Database Setup
+The PostgreSQL database is automatically configured in Replit. The connection details are provided via environment variables:
+- `DATABASE_URL` - Complete database connection string
+- `PGHOST`, `PGPORT`, `PGUSER`, `PGPASSWORD`, `PGDATABASE` - Individual connection parameters
 
-3. **Database setup**
-   ```bash
-   # Create MySQL database
-   mysql -u root -p
-   CREATE DATABASE complaint_system;
-   exit
-   ```
+#### Step 3: Start the Application
+In Replit, simply **click the "Run" button** or use the workflow named "Start application". This runs:
+```bash
+npm run dev
+```
 
-4. **Environment configuration**
-   ```bash
-   # Copy environment template
-   cp .env.example .env
-   
-   # Edit .env with your database credentials
-   DATABASE_URL=mysql://root:password@localhost:3306/complaint_system
-   JWT_SECRET=your_very_secure_jwt_secret_key_here
-   OTP_MODE=console
-   ```
+This single command starts both:
+- **Backend server** on port 5000 (Express.js API)
+- **Frontend development server** (Vite with React)
 
-5. **Database migration and seeding**
-   ```bash
-   # Seed database with sample data
-   node server/seed.js
-   ```
+#### Step 4: Access the Application
+The application will automatically open in Replit's webview. You can also access it via the generated URL.
 
-6. **Start development server**
-   ```bash
-   npm run dev
-   ```
+### What Happens When You Run the App
 
-The application will be available at `http://localhost:5000`
+1. **Database Connection**: Automatically connects to PostgreSQL using Replit's environment variables
+2. **Database Sync**: Creates and synchronizes all required tables:
+   - Users (with roles, flagging, and suspension capabilities)
+   - Students (for registration validation)
+   - Complaints (with status tracking and resolution notes)
+   - AuditLogs (for administrative action tracking)
+3. **Server Start**: Express.js API server starts on port 5000
+4. **Frontend Build**: Vite development server with hot module replacement
+5. **Ready to Use**: Registration and login pages become available
 
 ### Production Build
 
@@ -114,4 +106,56 @@ npm run build
 
 # Start production server
 npm start
-# cms
+```
+
+### Project Structure
+
+```
+├── client/               # Frontend (React + Vite)
+│   ├── src/             # React components and pages
+│   │   ├── components/  # Reusable UI components
+│   │   ├── pages/       # Route-based page components
+│   │   └── hooks/       # Custom React hooks
+│   └── index.html       # HTML entry point
+├── server/              # Backend (Express.js)
+│   ├── index.ts         # Main server file
+│   ├── routes.ts        # API routes
+│   ├── storage.ts       # Database operations
+│   └── models/          # Database models
+├── shared/              # Shared types and schemas
+│   └── schema.ts        # Database schema definitions
+└── package.json         # Dependencies and scripts
+```
+
+### First Time Setup
+
+1. **Click the Run button** - This will start both frontend and backend
+2. **Wait for database sync** - You'll see "Database synchronized" in the console
+3. **Access the app** - The webview will show the login/registration page
+4. **Create an account** - Use the registration flow to set up your first user
+
+### Available Scripts
+
+```bash
+# Start both frontend and backend in development mode
+npm run dev
+
+# Build the application for production
+npm run build
+
+# Start production server
+npm start
+
+# Type checking
+npm run check
+
+# Database operations
+npm run db:push
+```
+
+### Troubleshooting
+
+- **Database connection issues**: The database should connect automatically using Replit's environment variables
+- **Port conflicts**: The app uses port 5000 for the backend, Vite handles the frontend
+- **Build errors**: Check the console for any missing dependencies or TypeScript errors
+
