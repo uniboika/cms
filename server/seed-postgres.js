@@ -27,6 +27,8 @@ const User = sequelize.define('User', {
   flagCount: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
   isSuspended: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
   isVerified: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
+  otpCode: { type: DataTypes.STRING, allowNull: true },
+  otpExpires: { type: DataTypes.DATE, allowNull: true },
 });
 
 async function seedDatabase() {
