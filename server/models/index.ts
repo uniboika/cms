@@ -4,6 +4,7 @@ import { sequelize } from '../config/database';
 export class User extends Model {
   declare id: number;
   declare registrationNumber: string;
+  declare fullName: string;
   declare email: string;
   declare password?: string;
   declare role: 'student' | 'school_admin' | 'central_admin';
@@ -50,6 +51,7 @@ export class AuditLog extends Model {
 User.init({
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   registrationNumber: { type: DataTypes.STRING(20), allowNull: false, unique: true },
+  fullName: { type: DataTypes.STRING, allowNull: false },
   email: { type: DataTypes.STRING, allowNull: false },
   password: { type: DataTypes.STRING, allowNull: true },
   role: { 

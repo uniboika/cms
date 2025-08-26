@@ -25,16 +25,16 @@ Preferred communication style: Simple, everyday language.
 - **Role-based Access Control**: Three distinct user roles (student, school_admin, central_admin) with different permissions
 
 ### Database Design
-- **Drizzle ORM**: Type-safe SQL query builder with PostgreSQL dialect
-- **PostgreSQL**: Primary database configured via Drizzle, though the codebase shows migration from Sequelize/MySQL
+- **Sequelize ORM**: Object-relational mapping with PostgreSQL
+- **PostgreSQL**: Primary database automatically configured in Replit environment
 - **Schema Structure**:
-  - Users table with roles, flagging, and suspension capabilities
+  - Users table with roles, flagging, suspension capabilities, and full name field
   - Students table for registration validation
   - Complaints table with status tracking and resolution notes
   - Audit logs table for administrative action tracking
 
 ### Authentication Flow
-- **Multi-step Registration**: Registration number validation → Email verification → OTP verification → Password setup → Login
+- **Multi-step Registration**: Registration number validation → Full name input → Email verification → OTP verification → Password setup → Login
 - **OTP System**: Console-based OTP delivery for development (configurable for email)
 - **Session Management**: JWT tokens stored in localStorage with automatic logout on expiry
 

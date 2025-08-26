@@ -15,6 +15,7 @@ interface RegistrationModalProps {
 export default function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
   const [step, setStep] = useState<'register' | 'otp'>('register');
   const [registrationNumber, setRegistrationNumber] = useState('');
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
@@ -26,6 +27,7 @@ export default function RegistrationModal({ isOpen, onClose }: RegistrationModal
     try {
       await apiRequest('POST', '/api/auth/register', {
         registrationNumber,
+        fullName,
         email,
       });
 
@@ -49,6 +51,7 @@ export default function RegistrationModal({ isOpen, onClose }: RegistrationModal
   const handleClose = () => {
     setStep('register');
     setRegistrationNumber('');
+    setFullName('');
     setEmail('');
     onClose();
   };
@@ -83,6 +86,20 @@ export default function RegistrationModal({ isOpen, onClose }: RegistrationModal
               data-testid="input-registration-number"
             />
             <p className="text-xs text-gray-500 mt-1">Enter your official student registration number</p>
+          </div>
+          
+          <div>
+            <Label htmlFor="full-name">Full Name</Label>
+            <Input
+              id="full-name"
+              type="text"
+              placeholder="e.g., John Smith"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              required
+              data-testid="input-full-name"
+            />
+            <p className="text-xs text-gray-500 mt-1">Enter your full name as per official records</p>
           </div>
           
           <div>

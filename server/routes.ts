@@ -9,6 +9,7 @@ import { z } from "zod";
 
 const registerSchema = z.object({
   registrationNumber: z.string().min(1),
+  fullName: z.string().min(2, "Full name must be at least 2 characters"),
   email: z.string().email(),
 });
 
@@ -49,7 +50,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth routes
   app.post("/api/auth/register", async (req, res) => {
     try {
-      const { registrationNumber, email } = registerSchema.parse(req.body);
+      const { registrationNumber, fullName, email } = registerSchema.parse(req.body);
       
       // Check if user already exists
       const existingUser = await storage.getUserByRegistrationNumber(registrationNumber);
@@ -70,6 +71,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Create user with OTP
       const user = await storage.createUser({
         registrationNumber,
+        fullName,
         email,
         otpCode,
         otpExpires,
