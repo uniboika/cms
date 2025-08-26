@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { authService } from "@/lib/auth";
+import { useAuth } from "@/hooks/useAuth";
 import { useLocation } from "wouter";
 import TraceModal from "@/components/complaints/trace-modal";
 
@@ -17,23 +17,27 @@ export default function CentralAdminDashboard() {
   const [showTraceModal, setShowTraceModal] = useState(false);
   const { toast } = useToast();
   const [, setLocation] = useLocation();
-  
-  const user = authService.getUser();
+  const { user, logout } = useAuth();
 
-  const { data: complaints = [], isLoading: complaintsLoading } = useQuery({
+  const { data: complaints = [], isLoading: complaintsLoading, error: complaintsError } = useQuery({
     queryKey: ['/api/central-admin/complaints'],
     enabled: !!user,
   });
 
-  const { data: users = [], isLoading: usersLoading } = useQuery({
+  const { data: users = [], isLoading: usersLoading, error: usersError } = useQuery({
     queryKey: ['/api/central-admin/users'],
     enabled: !!user,
   });
 
-  const { data: auditLogs = [], isLoading: auditLoading } = useQuery({
+  const { data: auditLogs = [], isLoading: auditLoading, error: auditError } = useQuery({
     queryKey: ['/api/central-admin/audit-logs'],
     enabled: !!user,
   });
+
+  console.log('Central Admin User:', user);
+  console.log('Complaints:', complaints, 'Loading:', complaintsLoading, 'Error:', complaintsError);
+  console.log('Users:', users, 'Loading:', usersLoading, 'Error:', usersError);
+  console.log('Audit Logs:', auditLogs, 'Loading:', auditLoading, 'Error:', auditError);
 
   const complaintsArray = Array.isArray(complaints) ? complaints : [];
   const usersArray = Array.isArray(users) ? users : [];
@@ -112,7 +116,7 @@ export default function CentralAdminDashboard() {
   };
 
   const handleLogout = () => {
-    authService.clearAuth();
+    logout();
     setLocation('/');
   };
 
@@ -134,7 +138,14 @@ export default function CentralAdminDashboard() {
   };
 
   if (!user) {
-    return null;
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading user data...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
