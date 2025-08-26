@@ -131,6 +131,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/auth/me", authenticateToken, async (req: AuthRequest, res) => {
+    try {
+      const user = await storage.getUserById(req.user!.id);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      res.json({ 
+        user: {
+          id: user.id,
+          registrationNumber: user.registrationNumber,
+          fullName: user.fullName,
+          email: user.email,
+          role: user.role,
+          category: user.category,
+        }
+      });
+    } catch (error) {
+      console.error("Get user error:", error);
+      res.status(500).json({ message: "Failed to get user info" });
+    }
+  });
+
   app.post("/api/auth/login", async (req, res) => {
     try {
       const { registrationNumber, password } = loginSchema.parse(req.body);
@@ -162,10 +185,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/auth/me", authenticateToken, async (req: AuthRequest, res) => {
-    const { password, otpCode, otpExpires, ...userWithoutPassword } = req.user!.toJSON();
-    res.json(userWithoutPassword);
-  });
+
 
   // Student routes
   app.post("/api/complaints", authenticateToken, requireRole(['student']), async (req: AuthRequest, res) => {

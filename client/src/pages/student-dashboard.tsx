@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { authService } from "@/lib/auth";
+import { useAuth } from "@/hooks/useAuth";
 import { useLocation } from "wouter";
 import AnonymousWarningModal from "@/components/complaints/anonymous-warning-modal";
 
@@ -21,8 +21,7 @@ export default function StudentDashboard() {
   const [showAnonymousWarning, setShowAnonymousWarning] = useState(false);
   const { toast } = useToast();
   const [, setLocation] = useLocation();
-  
-  const user = authService.getUser();
+  const { user, logout } = useAuth();
 
   const { data: complaints = [], isLoading } = useQuery({
     queryKey: ['/api/complaints/my'],
@@ -100,7 +99,7 @@ export default function StudentDashboard() {
   };
 
   const handleLogout = () => {
-    authService.clearAuth();
+    logout();
     setLocation('/');
   };
 
