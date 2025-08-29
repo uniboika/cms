@@ -75,14 +75,14 @@ export class DatabaseStorage implements IStorage {
 
   async getAllStudents(): Promise<Student[]> {
     return await Student.findAll({
-      order: [['createdAt', 'DESC']],
+      order: [['created_at', 'DESC']],
     });
   }
 
   async getAllUsers() {
     return await User.findAll({
       attributes: { exclude: ['password', 'otpCode', 'otpExpires'] },
-      order: [['createdAt', 'DESC']],
+      order: [['created_at', 'DESC']],
     });
   }
 
@@ -93,7 +93,7 @@ export class DatabaseStorage implements IStorage {
   async getComplaintsByStudentId(studentId: number): Promise<Complaint[]> {
     return await Complaint.findAll({ 
       where: { studentId },
-      order: [['createdAt', 'DESC']]
+      order: [['created_at', 'DESC']]
     });
   }
 
@@ -101,14 +101,14 @@ export class DatabaseStorage implements IStorage {
     return await Complaint.findAll({ 
       where: { category },
       include: [{ model: User, as: 'student' }],
-      order: [['createdAt', 'DESC']]
+      order: [['created_at', 'DESC']]
     });
   }
 
   async getAllComplaints(): Promise<Complaint[]> {
     return await Complaint.findAll({ 
       include: [{ model: User, as: 'student' }],
-      order: [['createdAt', 'DESC']]
+      order: [['created_at', 'DESC']]
     });
   }
 
@@ -136,7 +136,7 @@ export class DatabaseStorage implements IStorage {
         { model: User, as: 'admin' },
         { model: Complaint, as: 'complaint' }
       ],
-      order: [['createdAt', 'DESC']]
+      order: [['created_at', 'DESC']]
     });
   }
 }

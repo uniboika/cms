@@ -131,6 +131,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Login route
+  app.post("/api/auth/login", async (req, res) => {
+    try {
+      const { registrationNumber, password } = loginSchema.parse(req.body);
+      
+      // Find user by registration number
+      const user = await storage.getUserByRegistrationNumber(registrationNumber);
+      
+      // Check if user exists and is verified
+      if (!user || !user.isVerified) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+      
+      // Check if account is suspended
+      if (user.isSuspended) {
+        return res.status(403).json({ message: "Account suspended. Please contact support." });
+      }
+      
+      // Verify password
+      const isPasswordValid = await bcrypt.compare(password, user.password || '');
+      if (!isPasswordValid) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+      
+      // Generate JWT token
+      const token = generateToken({
+        id: user.id,
+        registrationNumber: user.registrationNumber,
+        role: user.role,
+      });
+      
+      // Return user data (excluding sensitive info) and token
+      const { password: _, otpCode, otpExpires, ...userData } = user;
+      res.json({
+        ...userData,
+        token,
+      });
+      
+    } catch (error) {
+      console.error("Login error:", error);
+      res.status(400).json({ message: "Login failed" });
+    }
+  });
+
+  // Get current user
   app.get("/api/auth/me", authenticateToken, async (req: AuthRequest, res) => {
     try {
       const user = await storage.getUserById(req.user!.id);
@@ -172,7 +217,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Invalid credentials" });
       }
 
-      const token = generateToken(user.id);
+      // Generate token with required payload
+      const token = generateToken({
+        id: user.id,
+        registrationNumber: user.registrationNumber,
+        role: user.role
+      });
+      
+      // Remove sensitive data from user object
       const { password: _, otpCode, otpExpires, ...userWithoutPassword } = user.toJSON();
 
       res.json({ 

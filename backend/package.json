@@ -5,20 +5,27 @@
   "description": "Backend API for Complaint Management System",
   "main": "index.js",
   "scripts": {
-    "dev": "NODE_ENV=development tsx index.ts",
+    "dev": "NODE_ENV=development nodemon --watch 'src/**/*.ts' --exec 'tsx' index.ts",
     "build": "esbuild index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
     "start": "NODE_ENV=production node dist/index.js",
-    "seed": "node seed-postgres.js",
-    "db:push": "drizzle-kit push"
+    "seed": "NODE_ENV=development tsx seed-postgres.js",
+    "db:push": "drizzle-kit push",
+    "db:reset": "NODE_ENV=development tsx seed-postgres.js"
   },
   "dependencies": {
     "@neondatabase/serverless": "^0.10.4",
+    "@types/compression": "^1.8.1",
+    "@types/cors": "^2.8.19",
     "bcryptjs": "^3.0.2",
+    "compression": "^1.8.1",
     "connect-pg-simple": "^10.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
     "drizzle-orm": "^0.39.3",
     "drizzle-zod": "^0.7.1",
     "express": "^4.21.2",
     "express-session": "^1.18.2",
+    "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "sequelize": "^6.37.7",
     "zod": "^3.25.76",
@@ -33,6 +40,7 @@
     "@types/node": "20.16.11",
     "drizzle-kit": "^0.30.6",
     "esbuild": "^0.25.9",
+    "nodemon": "^3.1.10",
     "tsx": "^4.20.5",
     "typescript": "^5.6.3"
   }

@@ -1,20 +1,40 @@
 import { Sequelize, DataTypes } from 'sequelize';
 import bcrypt from 'bcryptjs';
+import dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config();
+
+if (!process.env.DATABASE_URL) {
+  console.error('Error: DATABASE_URL environment variable is not set');
+  process.exit(1);
+}
 
 // Database connection using environment variables
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: 'postgres',
-  logging: false
+  logging: process.env.NODE_ENV === 'development' ? console.log : false,
+  define: {
+    underscored: true,
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+  },
 });
 
-// Models (simplified for seeding)
-const Student = sequelize.define('Student', {
+
+// Models with explicit lowercase table names
+const Student = sequelize.define('student', {
   registrationNumber: { type: DataTypes.STRING(20), allowNull: false, unique: true },
   name: { type: DataTypes.STRING, allowNull: false },
   email: { type: DataTypes.STRING, allowNull: false },
+}, {
+  tableName: 'students',
+  timestamps: true,
+  underscored: true
 });
 
-const User = sequelize.define('User', {
+const User = sequelize.define('user', {
   registrationNumber: { type: DataTypes.STRING(20), allowNull: false, unique: true },
   fullName: { type: DataTypes.STRING, allowNull: false },
   email: { type: DataTypes.STRING, allowNull: false },
@@ -30,15 +50,30 @@ const User = sequelize.define('User', {
   isVerified: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
   otpCode: { type: DataTypes.STRING, allowNull: true },
   otpExpires: { type: DataTypes.DATE, allowNull: true },
+}, {
+  tableName: 'users',
+  timestamps: true,
+  underscored: true
 });
 
 async function seedDatabase() {
   try {
+    // Skip seeding if in production unless explicitly forced
+    if (process.env.NODE_ENV === 'production' && !process.env.FORCE_SEED) {
+      console.log('Skipping seeding in production. Set FORCE_SEED=true to force seeding.');
+      process.exit(0);
+    }
     console.log('🔄 Connecting to database...');
     await sequelize.authenticate();
     
     console.log('🔄 Syncing database...');
-    await sequelize.sync({ force: true });
+    
+    // Only force sync in development if explicitly requested
+    const syncOptions = process.env.FORCE_SYNC === 'true' 
+      ? { force: true, logging: console.log }
+      : { alter: true, logging: console.log };
+      
+    await sequelize.sync(syncOptions);
     
     console.log('🌱 Seeding students...');
     await Student.bulkCreate([
@@ -50,7 +85,9 @@ async function seedDatabase() {
     ]);
 
     console.log('🌱 Seeding admin users...');
-    const hashedPassword = await bcrypt.hash('admin123', 10);
+    const adminPassword = 'admin123';
+    const hashedPassword = await bcrypt.hash(adminPassword, 10);
+    console.log(`🔑 Admin password hash: ${hashedPassword}`);
     
     await User.bulkCreate([
       {

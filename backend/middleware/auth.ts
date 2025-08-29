@@ -17,8 +17,8 @@ export const authenticateToken = async (req: AuthRequest, res: Response, next: N
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as { userId: number };
-    const user = await User.findByPk(decoded.userId);
+    const decoded = jwt.verify(token, JWT_SECRET) as { id: number; registrationNumber: string; role: string };
+    const user = await User.findByPk(decoded.id);
     
     if (!user) {
       return res.status(401).json({ message: 'Invalid token' });
@@ -31,7 +31,8 @@ export const authenticateToken = async (req: AuthRequest, res: Response, next: N
     req.user = user;
     next();
   } catch (error) {
-    return res.status(403).json({ message: 'Invalid token' });
+    console.error('Token verification error:', error);
+    return res.status(403).json({ message: 'Invalid or expired token' });
   }
 };
 
@@ -44,6 +45,6 @@ export const requireRole = (roles: string[]) => {
   };
 };
 
-export const generateToken = (userId: number) => {
-  return jwt.sign({ userId }, JWT_SECRET, { expiresIn: '7d' });
+export const generateToken = (payload: { id: number; registrationNumber: string; role: string }) => {
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
 };
