@@ -396,7 +396,7 @@ export default function CentralAdminDashboard() {
                             </div>
                           </td>
                           <td className="px-6 py-4 text-sm text-gray-600" data-testid={`text-complaint-date-${complaint.id}`}>
-                            {new Date(complaint.createdAt).toLocaleDateString()}
+                            {new Date(complaint.created_at).toLocaleDateString()}
                           </td>
                           <td className="px-6 py-4">
                             <Badge 
@@ -591,13 +591,16 @@ export default function CentralAdminDashboard() {
 
       {/* Complaint Details Modal */}
       {showComplaintDetails && selectedComplaint && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[80vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
+        <div 
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          onClick={(e) => e.target === e.currentTarget && setShowComplaintDetails(false)}
+        >
+          <div className="bg-white text-gray-900 rounded-lg p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto relative shadow-xl">
+            <div className="flex justify-between items-center mb-4 sticky top-0 bg-white pb-2 border-b">
               <h3 className="text-lg font-semibold text-gray-900">Complaint Details</h3>
               <button
                 onClick={() => setShowComplaintDetails(false)}
-                className="text-gray-500 hover:text-gray-700"
+                className="text-gray-500 hover:text-gray-700 p-1 hover:bg-gray-100 rounded-full"
               >
                 <i className="fas fa-times"></i>
               </button>
@@ -659,7 +662,7 @@ export default function CentralAdminDashboard() {
               
               <div>
                 <label className="block text-sm font-medium text-gray-700">Submitted Date</label>
-                <p className="text-sm text-gray-900">{new Date(selectedComplaint.createdAt).toLocaleString()}</p>
+                <p className="text-sm text-gray-900">{new Date(selectedComplaint.created_at).toLocaleString()}</p>
               </div>
               
               {selectedComplaint.resolutionNote && (
@@ -682,13 +685,16 @@ export default function CentralAdminDashboard() {
 
       {/* User Details Modal */}
       {showUserDetails && selectedUser && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-lg w-full mx-4">
-            <div className="flex justify-between items-center mb-4">
+        <div 
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          onClick={(e) => e.target === e.currentTarget && setShowUserDetails(false)}
+        >
+          <div className="bg-white text-gray-900 rounded-lg p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto relative shadow-xl">
+            <div className="flex justify-between items-center mb-4 sticky top-0 bg-white pb-2 border-b">
               <h3 className="text-lg font-semibold text-gray-900">User Details</h3>
               <button
                 onClick={() => setShowUserDetails(false)}
-                className="text-gray-500 hover:text-gray-700"
+                className="text-gray-500 hover:text-gray-700 p-1 hover:bg-gray-100 rounded-full"
               >
                 <i className="fas fa-times"></i>
               </button>

@@ -132,7 +132,7 @@ export default function StudentDashboard() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
               <h1 className="text-lg font-semibold text-gray-900">Student Dashboard</h1>
-              <span className="text-sm text-gray-500">Welcome, Student</span>
+              <span className="text-sm text-gray-500">Welcome, {user.fullName}</span>
             </div>
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-600">
@@ -181,7 +181,7 @@ export default function StudentDashboard() {
                     <SelectTrigger data-testid="select-complaint-category">
                       <SelectValue placeholder="Select category" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-white">
                       <SelectItem value="academics">Academics</SelectItem>
                       <SelectItem value="general">General</SelectItem>
                       <SelectItem value="hostel">Hostel</SelectItem>
@@ -211,7 +211,7 @@ export default function StudentDashboard() {
                       setIsAnonymous(checked as boolean);
                     }}
                     data-testid="checkbox-anonymous"
-                    className="border-2"
+                    className="border-2 accent-yellow-600"
                   />
                   <Label htmlFor="anonymous" className="text-sm text-gray-700 font-medium cursor-pointer">
                     Submit anonymously
@@ -290,7 +290,7 @@ export default function StudentDashboard() {
                           )}
                           <div className="flex items-center text-xs text-gray-500 space-x-4">
                             <span data-testid={`text-complaint-date-${complaint.id}`}>
-                              {new Date(complaint.createdAt).toLocaleDateString()}
+                              {new Date(complaint.created_at).toLocaleDateString()}
                             </span>
                             <span data-testid={`text-complaint-anonymous-${complaint.id}`}>
                               Anonymous: {complaint.isAnonymous ? 'Yes' : 'No'}
@@ -350,7 +350,7 @@ export default function StudentDashboard() {
               <ul className="text-sm text-blue-800 space-y-2">
                 <li>• Be specific and detailed in your complaints</li>
                 <li>• Choose the appropriate category</li>
-                <li>• Anonymous reports can still be traced</li>
+                {/* <li>• Anonymous reports can still be traced</li> */}
                 <li>• False reports may result in account flags</li>
               </ul>
             </div>

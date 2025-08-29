@@ -19,7 +19,7 @@ export default function TraceModal({ isOpen, onClose, traceData, currentAdmin }:
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-2xl bg-white">
         <DialogHeader>
           <DialogTitle>Complaint Trace Results</DialogTitle>
         </DialogHeader>
@@ -54,7 +54,7 @@ export default function TraceModal({ isOpen, onClose, traceData, currentAdmin }:
             </p>
             <div className="flex items-center space-x-4 text-xs text-gray-500">
               <span>Category: <span data-testid="text-complaint-category">{complaint?.category}</span></span>
-              <span>Submitted: <span data-testid="text-complaint-date">{new Date(complaint?.createdAt).toLocaleDateString()}</span></span>
+              <span>Submitted: <span data-testid="text-complaint-date">{new Date(complaint?.created_at).toLocaleDateString()}</span></span>
               <span>Anonymous: <span data-testid="text-complaint-anonymous">{complaint?.isAnonymous ? "Yes" : "No"}</span></span>
             </div>
           </div>

@@ -160,7 +160,7 @@ export default function SchoolAdminDashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
-              <h1 className="text-lg font-semibold text-gray-900">School Admin Dashboard</h1>
+              <h1 className="text-lg font-semibold text-gray-900">Departmental Admin Dashboard</h1>
               <Badge className="bg-blue-100 text-blue-800">
                 <span data-testid="text-admin-category">{user.category}</span> Administrator
               </Badge>
@@ -303,7 +303,7 @@ export default function SchoolAdminDashboard() {
                         </div>
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-600" data-testid={`text-complaint-date-${complaint.id}`}>
-                        {new Date(complaint.createdAt).toLocaleDateString()}
+                        {new Date(complaint.created_at).toLocaleDateString()}
                       </td>
                       <td className="px-6 py-4">
                         <Badge 

@@ -68,7 +68,7 @@ export default function RegistrationModal({ isOpen, onClose }: RegistrationModal
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md bg-white">
         <DialogHeader>
           <DialogTitle>Student Registration</DialogTitle>
         </DialogHeader>
@@ -129,7 +129,7 @@ export default function RegistrationModal({ isOpen, onClose }: RegistrationModal
             <Button 
               type="submit" 
               disabled={loading}
-              className="flex-1"
+              className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-lg px-8 py-4 shadow-xl hover:shadow-2xl transition-all duration-300 text-white"
               data-testid="button-continue"
             >
               {loading ? 'Sending...' : 'Continue'}

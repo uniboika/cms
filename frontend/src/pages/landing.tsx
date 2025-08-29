@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,22 +9,37 @@ import RegistrationModal from "@/components/auth/registration-modal";
 import { GraduationCap, Shield, Users, FileText, Clock, Eye } from "lucide-react";
 
 export default function Landing() {
+  console.log('Rendering Landing component');
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const { isAuthenticated, user } = useAuth();
   const [, setLocation] = useLocation();
 
+  console.log('Auth state:', { isAuthenticated, user });
+
   // Redirect if already authenticated
-  if (isAuthenticated && user) {
-    if (user.role === 'student') {
-      setLocation('/student-dashboard');
-    } else if (user.role === 'school_admin') {
-      setLocation('/school-admin-dashboard');
-    } else if (user.role === 'central_admin') {
-      setLocation('/central-admin-dashboard');
+  React.useEffect(() => {
+    if (isAuthenticated && user) {
+      console.log('User is authenticated, redirecting based on role:', user.role);
+      if (user.role === 'student') {
+        setLocation('/student-dashboard');
+      } else if (user.role === 'school_admin') {
+        setLocation('/school-admin-dashboard');
+      } else if (user.role === 'central_admin') {
+        setLocation('/central-admin-dashboard');
+      } else {
+        console.error('Unknown user role:', user.role);
+        setLocation('/');
+      }
     }
-    return null;
-  }
+  }, [isAuthenticated, user, setLocation]);
+
+  // if (isAuthenticated) {
+  //   return <div className="flex items-center justify-center min-h-screen">
+  //     <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+  //     <span className="ml-4 text-lg">Redirecting to your dashboard...</span>
+  //   </div>;
+  // }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
@@ -32,13 +47,15 @@ export default function Landing() {
       <nav className="bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-                <FileText className="w-6 h-6 text-white" />
+            <div className="flex items-center space-x-3 group">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg transform transition-transform duration-300 group-hover:scale-110">
+                <FileText className="w-6 h-6 text-white" strokeWidth={2.5} />
               </div>
-              <div>
-                <span className="text-xl font-bold text-gray-900">EduComplaints</span>
-                <p className="text-xs text-gray-500">Management System</p>
+              <div className="flex flex-col">
+                <span className="text-2xl font-extrabold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  Campus Complaints
+                </span>
+                
               </div>
             </div>
             <div className="flex items-center space-x-3">
@@ -53,7 +70,7 @@ export default function Landing() {
               <Button 
                 onClick={() => setShowRegister(true)}
                 data-testid="button-register"
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg text-white"
               >
                 Get Started
               </Button>
@@ -65,10 +82,7 @@ export default function Landing() {
       {/* Hero Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center">
-          <div className="inline-flex items-center px-4 py-2 bg-blue-100 rounded-full text-blue-800 text-sm font-medium mb-8">
-            <Shield className="w-4 h-4 mr-2" />
-            Secure & Transparent Complaint Management
-          </div>
+        
           
           <h1 className="text-5xl md:text-7xl font-bold text-gray-900 leading-tight">
             Modern Solution for
@@ -85,7 +99,7 @@ export default function Landing() {
               size="lg" 
               onClick={() => setShowRegister(true)}
               data-testid="button-get-started"
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-lg px-8 py-4 shadow-xl hover:shadow-2xl transition-all duration-300"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-lg px-8 py-4 shadow-xl hover:shadow-2xl transition-all duration-300 text-white"
             >
               Start Free Trial
             </Button>
@@ -202,7 +216,7 @@ export default function Landing() {
                   </li>
                   <li className="flex items-center text-gray-700">
                     <div className="w-2 h-2 bg-purple-600 rounded-full mr-3"></div>
-                    Anonymous complaint tracing
+                    Reject false complaints
                   </li>
                   <li className="flex items-center text-gray-700">
                     <div className="w-2 h-2 bg-purple-600 rounded-full mr-3"></div>
@@ -219,7 +233,7 @@ export default function Landing() {
                   <div className="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center">
                     <Users className="w-6 h-6 text-white" />
                   </div>
-                  <Badge className="bg-green-600 hover:bg-green-700">Central Admins</Badge>
+                  <Badge className="bg-green-600 hover:bg-green-700 text-white">Central Admins</Badge>
                 </div>
                 <CardTitle className="text-xl text-gray-900">System Oversight</CardTitle>
                 <CardDescription className="text-gray-600">
@@ -251,7 +265,7 @@ export default function Landing() {
         </div>
 
         {/* Call to Action */}
-        <div className="mt-32 text-center bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-16 text-white">
+        {/* <div className="mt-32 text-center bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-16 text-white">
           <h2 className="text-4xl font-bold mb-4">Ready to Transform Your Institution?</h2>
           <p className="text-xl opacity-90 mb-8 max-w-2xl mx-auto">
             Join hundreds of educational institutions already using our platform to streamline complaint management
@@ -263,7 +277,7 @@ export default function Landing() {
           >
             Start Your Free Trial Today
           </Button>
-        </div>
+        </div> */}
       </div>
 
       {/* Footer */}
@@ -274,13 +288,13 @@ export default function Landing() {
               <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
                 <FileText className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold text-gray-900">EduComplaints</span>
+              <span className="text-xl font-bold text-gray-900">Campus Complaints</span>
             </div>
             <p className="text-gray-600 mb-4">
               Empowering educational institutions with efficient, transparent complaint resolution.
             </p>
             <p className="text-sm text-gray-500">
-              © 2025 EduComplaints Management System. Built for educational excellence.
+              © 2025 Campus Complaints Management System. Built for educational excellence.
             </p>
           </div>
         </div>

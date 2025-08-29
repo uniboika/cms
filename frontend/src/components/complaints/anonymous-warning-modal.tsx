@@ -20,7 +20,7 @@ export default function AnonymousWarningModal({ isOpen, onClose, onConfirm }: An
               <DialogTitle>Anonymous Submission Warning</DialogTitle>
             </DialogHeader>
             <div className="text-sm text-gray-600 space-y-2 mt-2">
-              <p><strong>Important:</strong> While your complaint will appear anonymous to other users, administrators can still trace the report back to you if necessary.</p>
+              {/* <p><strong>Important:</strong> While your complaint will appear anonymous to other users, administrators can still trace the report back to you if necessary.</p> */}
               <p>Submitting false or malicious reports may lead to account flags and potential suspension.</p>
               <p>Please ensure your complaint is genuine and accurate.</p>
             </div>

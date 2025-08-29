@@ -58,7 +58,7 @@ export default function OTPVerification({ isOpen, onClose, registrationNumber }:
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md bg-white">
         <div className="text-center mb-6">
           <i className="fas fa-mobile-alt text-4xl text-primary-500 mb-4"></i>
           <DialogHeader>
@@ -91,7 +91,7 @@ export default function OTPVerification({ isOpen, onClose, registrationNumber }:
           <Button 
             type="submit" 
             disabled={loading || otpCode.length !== 6}
-            className="w-full"
+            className="w-full bg-blue-500 hover:bg-blue-600"
             data-testid="button-verify"
           >
             {loading ? 'Verifying...' : 'Verify & Continue'}

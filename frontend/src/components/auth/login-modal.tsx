@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useLocation } from "wouter";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -19,43 +19,46 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const [, setLocation] = useLocation();
-  const { login } = useAuth();
+  const { login, user } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const response = await apiRequest('POST', '/api/auth/login', {
-        registrationNumber,
-        password,
-      });
+      const result = await login({ registrationNumber, password });
+      
+      if (result.success) {
+        // Show success toast
+        toast({
+          title: "Success",
+          description: "Logged in successfully",
+          variant: "default",
+          className: "bg-green-500 text-white"
+        });
 
-      const authData = await response.json();
-      login(authData.user, authData.token);
+        // Close the modal first
+        onClose();
 
-      toast({
-        title: "Success",
-        description: "Logged in successfully",
-      });
-
-      onClose();
-
-      // Redirect based on role
-      const { role } = authData.user;
-      if (role === 'student') {
-        setLocation('/student-dashboard');
-      } else if (role === 'school_admin') {
-        setLocation('/school-admin-dashboard');
-      } else if (role === 'central_admin') {
-        setLocation('/central-admin-dashboard');
+        // Get the user role from the auth state
+        const currentUser = JSON.parse(localStorage.getItem('auth') || '{}').user;
+        const role = currentUser?.role;
+        
+        // Redirect based on role
+        if (role === 'student') {
+          setLocation('/student-dashboard');
+        } else if (role === 'school_admin') {
+          setLocation('/school-admin-dashboard');
+        } else if (role === 'central_admin') {
+          setLocation('/central-admin-dashboard');
+        } else {
+          // Default fallback
+          setLocation('/');
+        }
       }
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Login failed",
-        variant: "destructive",
-      });
+      console.error('Login error:', error);
+      // Error toast is handled by the useAuth hook
     } finally {
       setLoading(false);
     }
@@ -69,7 +72,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md bg-white">
         <DialogHeader>
           <DialogTitle>Login</DialogTitle>
         </DialogHeader>
@@ -114,7 +117,8 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
             <Button 
               type="submit" 
               disabled={loading}
-              className="flex-1"
+              color="primary"
+              className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-lg px-8 py-4 shadow-xl hover:shadow-2xl transition-all duration-300 text-white"
               data-testid="button-login-submit"
             >
               {loading ? 'Logging in...' : 'Login'}

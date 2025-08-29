@@ -66,7 +66,7 @@ export default function PasswordSetup({ isOpen, onClose, registrationNumber }: P
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md bg-white">
         <div className="text-center mb-6">
           <i className="fas fa-lock text-4xl text-green-500 mb-4"></i>
           <DialogHeader>

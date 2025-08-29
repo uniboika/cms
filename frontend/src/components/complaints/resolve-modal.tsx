@@ -38,7 +38,7 @@ export default function ResolveModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-lg bg-white">
         <DialogHeader>
           <DialogTitle>
             {type === 'resolve' ? 'Resolve Complaint' : 'Mark as False Report'}
